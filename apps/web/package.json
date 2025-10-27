@@ -12,8 +12,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@workspace/math": "workspace:*",
+    "@clerk/nextjs": "^6.34.0",
     "@workspace/backend": "workspace:*",
+    "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
     "convex": "^1.28.0",
     "lucide-react": "^0.475.0",
