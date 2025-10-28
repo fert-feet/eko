@@ -1,12 +1,13 @@
 import React from "react";
+import AuthLayer from "@/modules/auth/ui/layouts/auth-layout";
 
 const Layout = ({
     children
-}: { children: React.ReactNode }) => {
+}: { children: React.ReactNode; }) => {
     return (
-        <div className="h-full items-center justify-center flex flex-col min-h-screen min-w-screen">
+        <AuthLayer>
             {children}
-        </div>
+        </AuthLayer>
     );
 };
 
