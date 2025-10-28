@@ -1,31 +1,49 @@
-# shadcn/ui monorepo template
+# Eko Project
 
-This template is for creating a monorepo with shadcn/ui.
+## Project Introduction
 
-## Usage
+This is a monorepo template integrated with shadcn/ui for building modern web applications.
 
-```bash
-pnpm dlx shadcn@latest init
-```
+## Getting Started
 
-## Adding components
+### Frontend Setup
 
-To add components to your app, run the following command at the root of your `web` app:
+Install dependencies for the frontend:
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+pnpm install
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+### Backend Setup (Convex + Clerk + Sentry)
 
-## Tailwind
+#### 1. Run Backend Setup
 
-Your `tailwind.config.ts` and `globals.css` are already set up to use the components from the `ui` package.
+```bash
+pnpm -F backend run setup
+```
 
-## Using components
+#### 2. Configure Environment Variables
 
-To use the components in your app, import them from the `ui` package.
+Create a `.env.local` file in the `packages/backend` directory with the following content:
 
-```tsx
-import { Button } from "@workspace/ui/components/button"
+```bash
+CLERK_JWT_ISSUER_DOMAIN=xxx
+```
+
+Create a `.env.local` file in the `/apps/web` directory with the following content:
+
+```bash
+NEXT_PUBLIC_CONVEX_URL=[same as your convex_url]
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=xxx
+CLERK_SECRET_KEY=xxx
+```
+
+> You can find the above values in the [Convex documentation](https://docs.convex.dev/home).
+
+## Running the Application
+
+To start the development server:
+
+```bash
+pnpm run dev
 ```
