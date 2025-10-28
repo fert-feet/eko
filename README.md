@@ -1,40 +1,49 @@
 # Eko Project
 
-## 1. Project Introduction
+## Project Introduction
 
-This is a monorepo template with shadcn/ui for building modern web applications.
+This is a monorepo template integrated with shadcn/ui for building modern web applications.
 
-## 2. Initialization Instructions
+## Getting Started
 
-### frontend
+### Frontend Setup
+
+Install dependencies for the frontend:
 
 ```bash
 pnpm install
 ```
-### backend (convex + clerk + sentry)
 
-#### 1. run setup
+### Backend Setup (Convex + Clerk + Sentry)
+
+#### 1. Run Backend Setup
 
 ```bash
 pnpm -F backend run setup
 ```
 
-#### 2. fill env.local
-Add content below to packages/backend/.env.local
+#### 2. Configure Environment Variables
+
+Create a `.env.local` file in the `packages/backend` directory with the following content:
+
 ```bash
 CLERK_JWT_ISSUER_DOMAIN=xxx
 ```
-Add content below to packages/backend/.env.local
+
+Create a `.env.local` file in the `/apps/web` directory with the following content:
+
 ```bash
-
-NEXT_PUBLIC_CONVEX_URL=[same to your convex_url]
-
+NEXT_PUBLIC_CONVEX_URL=[same as your convex_url]
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=xxx
 CLERK_SECRET_KEY=xxx
 ```
-> can find above content in https://docs.convex.dev/home
 
-## 3. Run
+> You can find the above values in the [Convex documentation](https://docs.convex.dev/home).
+
+## Running the Application
+
+To start the development server:
+
 ```bash
 pnpm run dev
 ```
