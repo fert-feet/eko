@@ -1,31 +1,40 @@
-# shadcn/ui monorepo template
+# Eko Project
 
-This template is for creating a monorepo with shadcn/ui.
+## 1. Project Introduction
 
-## Usage
+This is a monorepo template with shadcn/ui for building modern web applications.
 
-```bash
-pnpm dlx shadcn@latest init
-```
+## 2. Initialization Instructions
 
-## Adding components
-
-To add components to your app, run the following command at the root of your `web` app:
+### frontend
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+pnpm install
+```
+### backend (convex + clerk + sentry)
+
+#### 1. run setup
+
+```bash
+pnpm -F backend run setup
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+#### 2. fill env.local
+Add content below to packages/backend/.env.local
+```bash
+CLERK_JWT_ISSUER_DOMAIN=xxx
+```
+Add content below to packages/backend/.env.local
+```bash
 
-## Tailwind
+NEXT_PUBLIC_CONVEX_URL=[same to your convex_url]
 
-Your `tailwind.config.ts` and `globals.css` are already set up to use the components from the `ui` package.
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=xxx
+CLERK_SECRET_KEY=xxx
+```
+> can find above content in https://docs.convex.dev/home
 
-## Using components
-
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from "@workspace/ui/components/button"
+## 3. Run
+```bash
+pnpm run dev
 ```
