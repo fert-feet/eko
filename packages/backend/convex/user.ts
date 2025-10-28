@@ -10,6 +10,12 @@ export const getTest = query({
             throw new Error("Not authenticated");
         }
 
+        const orgId = identity.orgId as string;
+
+        if (!orgId) {
+            throw new Error("Missing organization")
+        }
+
         const user = await ctx.db.query("users").collect();
         return user;
     }

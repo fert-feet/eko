@@ -3,7 +3,7 @@
 import { Button } from "@workspace/ui/components/button";
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
-import { SignInButton, SignOutButton, UserButton, useUser } from "@clerk/nextjs";
+import { OrganizationSwitcher, SignInButton, SignOutButton, UserButton, useUser } from "@clerk/nextjs";
 
 export default function Page() {
   const users = useQuery(api.user.getTest);
@@ -26,7 +26,8 @@ export default function Page() {
             sign in
           </Button>
         </SignInButton>
-        <UserButton></UserButton>
+        <UserButton />
+        <OrganizationSwitcher />
       </div>
     </div>
   );
