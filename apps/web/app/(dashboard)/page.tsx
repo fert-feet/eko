@@ -11,8 +11,8 @@ export default function Page() {
   console.log(users);
 
   return (
-    <div className="flex items-center justify-center min-h-svh">
-      <div className="flex flex-col items-center justify-center gap-4">
+    <div className="flex items-center justify-center right-0 absolute">
+      <div className="flex items-center justify-center">
         <SignInButton mode="modal">
           <Button>
             sign in
@@ -23,9 +23,6 @@ export default function Page() {
             sign out
           </Button>
         </SignOutButton>
-        <Button onClick={() => add()}>
-          Add
-        </Button>
         <UserButton />
         <OrganizationSwitcher />
       </div>
