@@ -1,13 +1,20 @@
 "use client";
 
-import { Button } from "@workspace/ui/components/button";
+import WidgetView from "@/modules/widget/ui/views/widget-view";
+import { use } from "react";
 
-export default function Page() {
-  return (
-    <div>
-      <Button>
-        button
-      </Button>
-    </div>
-  );
+interface Props {
+  searchParams: Promise<{
+    organizationId: string;
+  }>;
 }
+
+const Page = ({ searchParams }: Props) => {
+  const { organizationId } = use(searchParams);
+
+  return (
+    <WidgetView organizationId={organizationId} />
+  );
+};
+
+export default Page;
