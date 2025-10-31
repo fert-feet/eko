@@ -1,6 +1,9 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 
+// last for 24 hours
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
+
 export const create = mutation({
     args: {
         name: v.string(),
@@ -23,6 +26,17 @@ export const create = mutation({
         }))
     },
     handler: async (ctx, args) => {
-        return;
+        const now = Date.now();
+        const expiresAt = now + SESSION_DURATION_MS;
+
+        const organizationId = ctx.db.insert("contactSessions", {
+            name: args.name,
+            email: args.email,
+            organizationId: args.organizationId,
+            expiresAt,
+            metadata: args.metadata
+        });
+
+        return organizationId;
     }
 });
