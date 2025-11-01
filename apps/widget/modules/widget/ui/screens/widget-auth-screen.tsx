@@ -6,6 +6,9 @@ import { email } from "zod/v4-mini";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@workspace/ui/components/form";
 import { Input } from "@workspace/ui/components/input";
 import { Button } from "@workspace/ui/components/button";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@workspace/ui/components/input-group";
+import { BanIcon, EllipsisIcon, Search } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@workspace/ui/components/tooltip";
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -48,12 +51,19 @@ const WidgetAuthScreen = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input
-                                        className="h-10 bg-background"
-                                        placeholder="e.g ky2fe"
-                                        type="text"
-                                        {...field}
-                                    />
+                                    <InputGroup className="h-10 bg-background" {...field}>
+                                        <InputGroupInput placeholder="example.com" />
+                                        <InputGroupAddon align="inline-end">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <InputGroupButton className="rounded-full" size="icon-xs">
+                                                        <EllipsisIcon />
+                                                    </InputGroupButton>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Enter name</TooltipContent>
+                                            </Tooltip>
+                                        </InputGroupAddon>
+                                    </InputGroup>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -65,21 +75,28 @@ const WidgetAuthScreen = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input
-                                        className="h-10 bg-background"
-                                        placeholder="e.g ky2fe@qq.com"
-                                        type="email"
-                                        {...field}
-                                    />
+                                    <InputGroup className="h-10 bg-background" {...field}>
+                                        <InputGroupInput placeholder="example.com" />
+                                        <InputGroupAddon align="inline-end">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <InputGroupButton className="rounded-full" size="icon-xs">
+                                                        <EllipsisIcon />
+                                                    </InputGroupButton>
+                                                </TooltipTrigger>
+                                                <TooltipContent>Enter email</TooltipContent>
+                                            </Tooltip>
+                                        </InputGroupAddon>
+                                    </InputGroup>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <Button
-                    disabled={form.formState.isSubmitting}
-                    size={"lg"}
-                    type="submit"
+                        disabled={form.formState.isSubmitting}
+                        size={"lg"}
+                        type="submit"
                     >
                         continue
                     </Button>
