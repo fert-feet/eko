@@ -1,20 +1,56 @@
 "use client";
 
+import { errorMessageAtom, loadingMessageAtom, organizationIdAtom, screenAtom } from "@/modules/widget/atoms/widget-atoms";
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
+import { api } from "@workspace/backend/_generated/api";
 import { Spinner } from "@workspace/ui/components/spinner";
+import { useAction } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useState } from "react";
-import { errorMessageAtom, loadingMessageAtom } from "@/modules/widget/atoms/widget-atoms";
+import { useEffect, useState } from "react";
 
-type InitStep = "storage" | "org" | "session" | "setting" | "vapi" | "done"
+type InitStep = "storage" | "org" | "session" | "setting" | "vapi" | "done";
 
 const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null; }) => {
-    const [step, setSetp] = useState<InitStep>("org")
-    const [sessionValid, setSessionValid] = useState(false)
+    const [step, setSetp] = useState<InitStep>("org");
+    const [sessionValid, setSessionValid] = useState(false);
 
-    const loadingMessage = useAtomValue(loadingMessageAtom)
-    const setErrorMessage = useSetAtom(errorMessageAtom)
-    
+    const loadingMessage = useAtomValue(loadingMessageAtom);
+    const setErrorMessage = useSetAtom(errorMessageAtom);
+    const setLoadingMessage = useSetAtom(loadingMessageAtom);
+    const setOrganizationId = useSetAtom(organizationIdAtom);
+    const setScreen = useSetAtom(screenAtom);
+
+    const validateOrganization = useAction(api.public.organizations.validate);
+    useEffect(() => {
+        if (step !== "org") {
+            return;
+        }
+
+        setLoadingMessage("Loading organization...");
+
+        if (!organizationId) {
+            setErrorMessage("Organization ID is required");
+            setScreen("error");
+            return;
+        }
+
+        setLoadingMessage("Verifying organization...");
+
+        validateOrganization({ organizationId })
+            .then((result) => {
+                if (result?.valid) {
+                    setOrganizationId(organizationId);
+                } else {
+                    setErrorMessage(result?.reason || "Invalid configuration");
+                    setScreen("error");
+                }
+            })
+            .catch(() => {
+                setErrorMessage("Unable to varify organization");
+                setScreen("error");
+            });
+    }, [step, organizationId, setErrorMessage, setScreen]);
+
     return (
         <>
             <WidgetHeader>
