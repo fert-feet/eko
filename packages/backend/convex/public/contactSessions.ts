@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "../_generated/server";
+import { mutation } from "../_generated/server";
 
 // last for 24 hours
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
