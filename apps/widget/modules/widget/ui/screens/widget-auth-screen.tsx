@@ -9,6 +9,12 @@ import { Button } from "@workspace/ui/components/button";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@workspace/ui/components/input-group";
 import { BanIcon, EllipsisIcon, Search } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@workspace/ui/components/tooltip";
+import { Doc } from "@workspace/backend/_generated/dataModel";
+import { useMutation } from "convex/react";
+import { api } from "@workspace/backend/_generated/api";
+
+// TODO: just for temp
+const organizationId = "0"
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -16,6 +22,8 @@ const formSchema = z.object({
 });
 
 const WidgetAuthScreen = () => {
+    const creatContactSession = useMutation(api.public.contactSessions.create)
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -25,7 +33,34 @@ const WidgetAuthScreen = () => {
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+        if (!organizationId) {
+            return 
+        }
+
+        const metadata: Doc<"contactSessions">["metadata"] = {
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            languages: navigator.languages?.join(","),
+            platform: navigator.platform,
+            vendor: navigator.vendor,
+            screenResolution: `${screen.width}x${screen.height}`,
+            viewportSize: `${window.innerWidth}x${window.innerHeight}`,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timezoneOffset: new Date().getTimezoneOffset(),
+            cookieEnabled: navigator.cookieEnabled,
+            referrer: document.referrer || "direct",
+            currentUrl: window.location.href,
+        };
+
+        const contactSessionId = await creatContactSession({
+            ...values,
+            organizationId,
+            metadata
+        })
+
+        // TODO: temp log
+        console.log(contactSessionId);
+        
     };
 
     return (

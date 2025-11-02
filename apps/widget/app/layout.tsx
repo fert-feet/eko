@@ -24,7 +24,11 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
       >
-        {children}
+        <ClerkProvider>
+          <ConvexClientProvider>
+              {children}
+          </ConvexClientProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
