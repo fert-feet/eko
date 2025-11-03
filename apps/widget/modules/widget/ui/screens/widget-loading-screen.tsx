@@ -1,12 +1,14 @@
 "use client";
 
-import { errorMessageAtom, loadingMessageAtom, organizationIdAtom, screenAtom } from "@/modules/widget/atoms/widget-atoms";
+import { contactSessionIdAtomFaily, errorMessageAtom, loadingMessageAtom, organizationIdAtom, screenAtom } from "@/modules/widget/atoms/widget-atoms";
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { api } from "@workspace/backend/_generated/api";
 import { Spinner } from "@workspace/ui/components/spinner";
-import { useAction } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { resume } from "react-dom/server";
+import { Id } from "@workspace/backend/_generated/dataModel";
 
 type InitStep = "storage" | "org" | "session" | "setting" | "vapi" | "done";
 
@@ -20,13 +22,16 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
     const setOrganizationId = useSetAtom(organizationIdAtom);
     const setScreen = useSetAtom(screenAtom);
 
+    const contactSessionId = useAtomValue(contactSessionIdAtomFaily(organizationId));
+
     const validateOrganization = useAction(api.public.organizations.validate);
+    // step1: validate organization
     useEffect(() => {
         if (step !== "org") {
             return;
         }
 
-        setLoadingMessage("Loading organization...");
+        setLoadingMessage("Finding organization ID...");
 
         if (!organizationId) {
             setErrorMessage("Organization ID is required");
@@ -40,6 +45,7 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
             .then((result) => {
                 if (result?.valid) {
                     setOrganizationId(organizationId);
+                    setSetp("session");
                 } else {
                     setErrorMessage(result?.reason || "Invalid configuration");
                     setScreen("error");
@@ -49,7 +55,48 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
                 setErrorMessage("Unable to varify organization");
                 setScreen("error");
             });
-    }, [step, organizationId, setErrorMessage, setScreen]);
+    }, [step, organizationId, setErrorMessage, setScreen, setLoadingMessage, validateOrganization, setOrganizationId]); // TODO: 什么是闭包问题，为什么要避免
+
+    // step 2: validate session if exists
+
+    const validateContactSession = useMutation(api.public.contactSessions.validate);
+    useEffect(() => {
+        if (step !== "session") {
+            return;
+        }
+
+        setLoadingMessage("Finding contact session ID...");
+
+        if (!contactSessionId) {
+            setSessionValid(false);
+            setSetp("done");
+            return;
+        }
+
+        setLoadingMessage("Validating session...");
+
+        validateContactSession({
+            contactSessionId: contactSessionId
+        })
+
+            .then((result) => {
+                setSessionValid(result.valid);
+                setSetp("done");
+            })
+            .catch(() => {
+                setSessionValid(false);
+                setSetp("done");
+            });
+    }, [step, contactSessionId, validateContactSession, setLoadingMessage]);
+
+    useEffect(() => {
+        if (step !== "done") {
+            return;
+        }
+
+        const hasValidSession = contactSessionId && sessionValid;
+        setScreen(hasValidSession ? "selection" : "auth")
+    }, [step, contactSessionId, sessionValid, setScreen]);
 
     return (
         <>

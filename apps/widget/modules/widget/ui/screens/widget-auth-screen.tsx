@@ -12,6 +12,8 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@workspace/ui/component
 import { Doc } from "@workspace/backend/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
+import { useAtomValue, useSetAtom } from "jotai";
+import { contactSessionIdAtomFaily, organizationIdAtom } from "@/modules/widget/atoms/widget-atoms";
 
 // TODO: just for temp
 const organizationId = "0"
@@ -22,6 +24,11 @@ const formSchema = z.object({
 });
 
 const WidgetAuthScreen = () => {
+    const organizationId = useAtomValue(organizationIdAtom)
+    const setContactSessionId = useSetAtom(
+        contactSessionIdAtomFaily(organizationId)
+    )
+    
     const creatContactSession = useMutation(api.public.contactSessions.create)
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -31,6 +38,7 @@ const WidgetAuthScreen = () => {
             email: ""
         }
     });
+
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         if (!organizationId) {
@@ -58,9 +66,7 @@ const WidgetAuthScreen = () => {
             metadata
         })
 
-        // TODO: temp log
-        console.log(contactSessionId);
-        
+        setContactSessionId(contactSessionId)
     };
 
     return (

@@ -1,9 +1,20 @@
 import { atom } from "jotai";
+import { atomFamily, atomWithStorage } from "jotai/utils";
 import { WidgetScreen } from "@/modules/widget/types";
+import { CONTACT_SESSION_KEY } from "../constants";
+import { Id } from "@workspace/backend/_generated/dataModel";
 
 // basic state atoms
-export const screenAtom = atom<WidgetScreen>("loading")
-export const organizationIdAtom = atom<string | null>(null)
+export const screenAtom = atom<WidgetScreen>("loading");
+export const organizationIdAtom = atom<string | null>(null);
 
-export const errorMessageAtom = atom<string | null>(null)
+// Organization-scoped contact session atom
+// TODO: 笔记点
+export const contactSessionIdAtomFaily = atomFamily((organizationId: string | null) => atomWithStorage<Id<"contactSessions"> | null>(
+    `${CONTACT_SESSION_KEY}_${organizationId}`, null
+));
+
+
+export const errorMessageAtom = atom<string | null>(null);
 export const loadingMessageAtom = atom<string | null>(null)
+
