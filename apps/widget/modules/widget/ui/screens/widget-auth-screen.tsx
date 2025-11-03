@@ -1,22 +1,17 @@
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import WidgetHeader from "@/modules/widget/ui/components/widget-header";
-import { email } from "zod/v4-mini";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@workspace/ui/components/form";
-import { Input } from "@workspace/ui/components/input";
-import { Button } from "@workspace/ui/components/button";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@workspace/ui/components/input-group";
-import { BanIcon, EllipsisIcon, Search } from "lucide-react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@workspace/ui/components/tooltip";
-import { Doc } from "@workspace/backend/_generated/dataModel";
-import { useMutation } from "convex/react";
-import { api } from "@workspace/backend/_generated/api";
-import { useAtomValue, useSetAtom } from "jotai";
 import { contactSessionIdAtomFaily, organizationIdAtom } from "@/modules/widget/atoms/widget-atoms";
-
-// TODO: just for temp
-const organizationId = "0"
+import WidgetHeader from "@/modules/widget/ui/components/widget-header";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "@workspace/backend/_generated/api";
+import { Doc } from "@workspace/backend/_generated/dataModel";
+import { Button } from "@workspace/ui/components/button";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@workspace/ui/components/form";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@workspace/ui/components/input-group";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@workspace/ui/components/tooltip";
+import { useMutation } from "convex/react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { EllipsisIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
     name: z.string().min(1, "Name is required"),
