@@ -7,8 +7,6 @@ import { Spinner } from "@workspace/ui/components/spinner";
 import { useAction, useMutation } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { resume } from "react-dom/server";
-import { Id } from "@workspace/backend/_generated/dataModel";
 
 type InitStep = "storage" | "org" | "session" | "setting" | "vapi" | "done";
 
