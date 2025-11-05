@@ -10,8 +10,11 @@
 
 import type * as public_contactSessions from "../public/contactSessions.js";
 import type * as public_conversations from "../public/conversations.js";
+import type * as public_message from "../public/message.js";
 import type * as public_organizations from "../public/organizations.js";
 import type * as system_ai_agent_supportAgent from "../system/ai/agent/supportAgent.js";
+import type * as system_contactSessions from "../system/contactSessions.js";
+import type * as system_conversations from "../system/conversations.js";
 import type * as user from "../user.js";
 
 import type {
@@ -31,8 +34,11 @@ import type {
 declare const fullApi: ApiFromModules<{
   "public/contactSessions": typeof public_contactSessions;
   "public/conversations": typeof public_conversations;
+  "public/message": typeof public_message;
   "public/organizations": typeof public_organizations;
   "system/ai/agent/supportAgent": typeof system_ai_agent_supportAgent;
+  "system/contactSessions": typeof system_contactSessions;
+  "system/conversations": typeof system_conversations;
   user: typeof user;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
