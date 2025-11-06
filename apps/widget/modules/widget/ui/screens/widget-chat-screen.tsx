@@ -1,16 +1,30 @@
 "use client";
 
-import WidgetHeader from "@/modules/widget/ui/components/widget-header";
-import { Button } from "@workspace/ui/components/button";
-import { useQuery } from "convex/react";
-import { ArrowLeftIcon, MenuIcon } from "lucide-react";
-import { api } from "@workspace/backend/_generated/api";
-import { useAtomValue, useSetAtom } from "jotai";
 import { contactSessionIdAtomFaily, conversationIdAtom, organizationIdAtom, screenAtom } from "@/modules/widget/atoms/widget-atoms";
+import WidgetHeader from "@/modules/widget/ui/components/widget-header";
+import { toUIMessages, useThreadMessages } from "@convex-dev/agent/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "@workspace/backend/_generated/api";
+import { Conversation, ConversationContent, ConversationScrollButton } from "@workspace/ui/components/ai/conversation";
+import { PromptInput, PromptInputTextarea, PromptInputTools, PromptInputProvider, PromptInputSubmit, PromptInputFooter } from "@workspace/ui/components/ai/prompt-input";
+import { Message, MessageContent } from "@workspace/ui/components/ai/message";
+import { Response } from "@workspace/ui/components/ai/response";
+import { Button } from "@workspace/ui/components/button";
+import { useAction, useQuery } from "convex/react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { ArrowLeftIcon, MenuIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+
+import z from "zod";
+import { Form, FormField } from "@workspace/ui/components/form";
+
+const formSchema = z.object({
+    message: z.string().min(1, "Message is Required")
+});
 const WidgetChatScreen = () => {
-    const setScreen = useSetAtom(screenAtom)
-    const setConversationId = useSetAtom(conversationIdAtom)
-    
+    const setScreen = useSetAtom(screenAtom);
+    const setConversationId = useSetAtom(conversationIdAtom);
+
     const conversationId = useAtomValue(conversationIdAtom);
     const organizationId = useAtomValue(organizationIdAtom);
 
@@ -27,10 +41,48 @@ const WidgetChatScreen = () => {
             )
     );
 
+    const messages = useThreadMessages(
+        api.public.message.getMany,
+        conversation?.threadId && contactSessionId ?
+            {
+                threadId: conversation.threadId,
+                contactSessionId: contactSessionId
+            } :
+            "skip",
+        {
+            initialNumItems: 10
+        }
+    );
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            message: ""
+        }
+    });
+
+    const createMessage = useAction(api.public.message.create);
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        if (!conversation || !contactSessionId) {
+            return;
+        }
+
+        form.reset();
+
+        await createMessage({
+            threadId: conversation.threadId,
+            contactSessionId,
+            prompt: values.message
+        });
+    };
+
+
     const onBack = () => {
-        setConversationId(null)
-        setScreen("selection")
-    }
+        setConversationId(null);
+        setScreen("selection");
+    };
+
+
     return (
         <>
             <WidgetHeader className="flex items-center justify-between">
@@ -51,11 +103,60 @@ const WidgetChatScreen = () => {
                     <MenuIcon />
                 </Button>
             </WidgetHeader>
-            <div className="flex flex-1 flex-col gap-y-4 p-4">
-                <p className="text-sm">
-                    {JSON.stringify(conversation)}
-                </p>
-            </div>
+            <Conversation>
+                <ConversationContent>
+                    {toUIMessages(messages.results ?? [])?.map((message) => {
+                        return (
+                            <Message
+                                from={message.role === "user" ? "user" : "assistant"}
+                                key={message.id}
+                            >
+                                <MessageContent>
+                                    <Response>{message.text}</Response>
+                                </MessageContent>
+                                {/* TODO: Add Avatar component */}
+                            </Message>
+                        );
+                    })}
+                </ConversationContent>
+            </Conversation>
+            {/* TODO: Add suggestions */}
+            <Form {...form}>
+                <PromptInputProvider>
+                    <PromptInput
+                        className="rounded-none border-x-0 border-b-0"
+                        onSubmit={(message) => {
+                            form.setValue("message", message.text || "");
+                            form.handleSubmit(onSubmit)();
+                        }}
+                    >
+                        <FormField
+                            control={form.control}
+                            disabled={conversation?.status === "resolved"}
+                            name="message"
+                            render={({ field }) => (
+                                <PromptInputTextarea
+                                    onChange={field.onChange}
+                                    placeholder={
+                                        conversation?.status === "resolved"
+                                            ? "This conversation has been resolved."
+                                            : "Type your message..."
+                                    }
+                                    value={field.value}
+                                />
+                            )}
+                        />
+                        <PromptInputFooter>
+                            <PromptInputTools />
+                            <PromptInputSubmit
+                                disabled={conversation?.status === "resolved" || !form.formState.isValid}
+                                status="ready"
+                                type="submit"
+                            />
+                        </PromptInputFooter>
+                    </PromptInput>
+                </PromptInputProvider>
+            </Form>
         </>
     );
 };
