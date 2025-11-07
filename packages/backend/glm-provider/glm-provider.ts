@@ -104,4 +104,5 @@ export function createGLM(
 }
 
 // Export default instance
+// TODO: Publish this provider
 export const glm = createGLM();
