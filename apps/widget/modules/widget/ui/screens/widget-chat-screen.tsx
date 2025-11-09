@@ -16,6 +16,7 @@ import { ArrowLeftIcon, MenuIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
 import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
+import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
 
 import { Form, FormField } from "@workspace/ui/components/form";
 import z from "zod";
@@ -128,7 +129,17 @@ const WidgetChatScreen = () => {
                                 <MessageContent>
                                     <Response>{message.text}</Response>
                                 </MessageContent>
-                                {/* TODO: Add Avatar component */}
+                                {message.role === "user" && (
+                                    <DicebearAvatar
+                                        seed="user"
+                                    />
+                                )}
+                                {message.role === "assistant" && (
+                                    <DicebearAvatar
+                                        seed="assistant"
+                                        badgeImageUrl="/eko-logo.svg"
+                                    />
+                                )}
                             </Message>
                         );
                     })}
