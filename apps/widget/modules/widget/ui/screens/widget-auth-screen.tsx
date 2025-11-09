@@ -1,4 +1,4 @@
-import { contactSessionIdAtomFaily, organizationIdAtom } from "@/modules/widget/atoms/widget-atoms";
+import { contactSessionIdAtomFaily, organizationIdAtom, screenAtom } from "@/modules/widget/atoms/widget-atoms";
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@workspace/backend/_generated/api";
@@ -25,6 +25,8 @@ const WidgetAuthScreen = () => {
     )
     
     const creatContactSession = useMutation(api.public.contactSessions.create)
+
+    const setScreen = useSetAtom(screenAtom)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -62,6 +64,7 @@ const WidgetAuthScreen = () => {
         })
 
         setContactSessionId(contactSessionId)
+        setScreen("selection")
     };
 
     return (

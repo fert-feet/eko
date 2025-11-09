@@ -5,18 +5,21 @@ import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { toUIMessages, useThreadMessages } from "@convex-dev/agent/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@workspace/backend/_generated/api";
-import { Conversation, ConversationContent, ConversationScrollButton } from "@workspace/ui/components/ai/conversation";
-import { PromptInput, PromptInputTextarea, PromptInputTools, PromptInputProvider, PromptInputSubmit, PromptInputFooter } from "@workspace/ui/components/ai/prompt-input";
+import { Conversation, ConversationContent } from "@workspace/ui/components/ai/conversation";
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
+import { PromptInput, PromptInputFooter, PromptInputProvider, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
 import { Response } from "@workspace/ui/components/ai/response";
 import { Button } from "@workspace/ui/components/button";
 import { useAction, useQuery } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { ArrowLeftIcon, MenuIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
+import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
+import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
 
-import z from "zod";
 import { Form, FormField } from "@workspace/ui/components/form";
+import z from "zod";
 
 const formSchema = z.object({
     message: z.string().min(1, "Message is Required")
@@ -53,6 +56,12 @@ const WidgetChatScreen = () => {
             initialNumItems: 10
         }
     );
+
+    const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore } = useInfiniteScroll({
+        status: messages.status,
+        loadMore: messages.loadMore,
+        loadSize: 10
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -105,6 +114,12 @@ const WidgetChatScreen = () => {
             </WidgetHeader>
             <Conversation>
                 <ConversationContent>
+                    <InfiniteScrollTrigger
+                        canLoadMore={canLoadMore}
+                        isLoadingMore={isLoadingMore}
+                        onLoadMore={handleLoadMore}
+                        ref={topElementRef}
+                    />
                     {toUIMessages(messages.results ?? [])?.map((message) => {
                         return (
                             <Message
@@ -114,7 +129,17 @@ const WidgetChatScreen = () => {
                                 <MessageContent>
                                     <Response>{message.text}</Response>
                                 </MessageContent>
-                                {/* TODO: Add Avatar component */}
+                                {message.role === "user" && (
+                                    <DicebearAvatar
+                                        seed="user"
+                                    />
+                                )}
+                                {message.role === "assistant" && (
+                                    <DicebearAvatar
+                                        seed="assistant"
+                                        badgeImageUrl="/eko-logo.svg"
+                                    />
+                                )}
                             </Message>
                         );
                     })}
