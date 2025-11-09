@@ -38,6 +38,7 @@ export const add = mutation({
         }
 
         const user = await ctx.db.insert("users", {
+            // TODO: Change this "test" name
             name: "test"
         })
         return user;
