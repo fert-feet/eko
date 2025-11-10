@@ -35,6 +35,7 @@ const InfiniteScrollTrigger = ({
                 onClick={onLoadMore}
                 size={"sm"}
                 variant={"ghost"}
+                className="hover:bg-primary hover:text-background"
             >
                 {text}
             </Button>
