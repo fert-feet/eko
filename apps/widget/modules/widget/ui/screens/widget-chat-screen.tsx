@@ -61,7 +61,7 @@ const WidgetChatScreen = () => {
         status: messages.status,
         loadMore: messages.loadMore,
         loadSize: 5,
-        observerEnabled: false
+        observerEnabled: true
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
