@@ -5,6 +5,13 @@ import { MessageDoc, saveMessage } from "@convex-dev/agent";
 import { components } from "../_generated/api";
 import { paginationOptsValidator } from "convex/server";
 
+/**
+ * 分页查询指定联系人会话下的所有对话，且为每个对话附加最新一条消息
+ * @param {Object} args - 查询参数
+ * @param {v.id("contactSessions")} args.contactSessionId - 联系人会话ID（关联contactSessions集合）
+ * @param {paginationOptsValidator} args.paginationOpts - 分页配置（numItems: 每页条数, cursor: 下一页游标）
+ * @returns {Object} 分页结果：包含带最新消息的对话数组、分页游标、是否有更多数据
+ */
 export const getMany = query({
     args: {
         contactSessionId: v.id("contactSessions"),
@@ -32,7 +39,6 @@ export const getMany = query({
             conversations.page.map(async (conversation) => {
                 let lastMessage: MessageDoc | null = null;
 
-                // 根据 conversation 找每个对话的消息列表，按照一页一个排列
                 const messages = await supportAgent.listMessages(ctx, {
                     threadId: conversation.threadId,
                     paginationOpts: { numItems: 1, cursor: null }
@@ -54,7 +60,6 @@ export const getMany = query({
             })
         );
         
-        // TODO: 还是不理解，需要进一步解释
         return {
             ...conversations,
             page: conversationsWithLastMessage
