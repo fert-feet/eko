@@ -7,6 +7,8 @@ import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import ConversationStatusIcon from "@workspace/ui/components/conversation-status-icon";
+import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
+import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
 import { usePaginatedQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -24,9 +26,16 @@ const WidgetInboxScreen = () => {
     const conversations = usePaginatedQuery(api.public.conversations.getMany,
         contactSessionId ? { contactSessionId } : "skip",
         {
-            initialNumItems: 10
+            initialNumItems: 5
         }
     );
+
+    const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore } = useInfiniteScroll({
+        status: conversations.status,
+        loadMore: conversations.loadMore,
+        loadSize: 5,
+        observerEnabled: false
+    });
 
     const onBack = () => {
         setScreen("selection");
@@ -74,11 +83,17 @@ const WidgetInboxScreen = () => {
                                 <p className="truncate text-sm">
                                     {conversation.lastMessage?.text}
                                 </p>
-                                <ConversationStatusIcon status={conversation.status}/>
+                                <ConversationStatusIcon status={conversation.status} />
                             </div>
                         </div>
                     </Button>
                 ))}
+                <InfiniteScrollTrigger
+                    canLoadMore={canLoadMore}
+                    isLoadingMore={isLoadingMore}
+                    onLoadMore={handleLoadMore}
+                    ref={topElementRef}
+                />
             </div>
             <WidgetFooter />
         </>
