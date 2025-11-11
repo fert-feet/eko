@@ -7,15 +7,18 @@ interface ConversationStatusIconProps {
 
 const statusConfig = {
     resolved: {
-        icon: CheckIcon
+        icon: CheckIcon,
+        bgColor: "text-[#3AA647]"
     },
 
     escalated: {
-        icon: ArrowUpIcon
+        icon: ArrowUpIcon,
+        bgColor: "text-[#DE8833]"
     },
 
     unresolved: {
-        icon: ArrowRightIcon
+        icon: ArrowRightIcon,
+        bgColor: "text-[#AD0A1D]"
     }
 }
 
@@ -29,7 +32,9 @@ const ConversationStatusIcon = ({
         <div className={cn(
             "flex items-center justify-center rounded-full p-1.5",
         )}>
-            <Icon className="size-3 stroke-3 text-primary"/>
+            <Icon className={cn(
+                "size-3 stroke-3", config.bgColor
+            )}/>
         </div>
     )
 }
