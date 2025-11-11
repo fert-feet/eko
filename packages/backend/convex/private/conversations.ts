@@ -1,70 +1,97 @@
+import { MessageDoc, saveMessage } from "@convex-dev/agent";
+import { paginationOptsValidator, PaginationResult } from "convex/server";
 import { ConvexError, v } from "convex/values";
+import { components } from "../_generated/api";
+import { Doc } from "../_generated/dataModel";
 import { mutation, query } from "../_generated/server";
 import { supportAgent } from "../system/ai/agent/supportAgent";
-import { MessageDoc, saveMessage } from "@convex-dev/agent";
-import { components } from "../_generated/api";
-import { paginationOptsValidator } from "convex/server";
 
-/**
- * 分页查询指定联系人会话下的所有对话，且为每个对话附加最新一条消息
- * @param {Object} args - 查询参数
- * @param {v.id("contactSessions")} args.contactSessionId - 联系人会话ID（关联contactSessions集合）
- * @param {paginationOptsValidator} args.paginationOpts - 分页配置（numItems: 每页条数, cursor: 下一页游标）
- * @returns {Object} 分页结果：包含带最新消息的对话数组、分页游标、是否有更多数据
- */
 export const getMany = query({
     args: {
-        contactSessionId: v.id("contactSessions"),
-        paginationOpts: paginationOptsValidator
+        paginationOpts: paginationOptsValidator,
+        status: v.union(
+            v.literal("unresolved"),
+            v.literal("escalated"),
+            v.literal("resolved")
+        ),
     },
     handler: async (ctx, args) => {
-        const session = await ctx.db.get(args.contactSessionId);
+        const identity = await ctx.auth.getUserIdentity();
 
-        if (!session || session.expiresAt < Date.now()) {
+        if (!identity) {
             throw new ConvexError({
                 code: "UNAUTHORIZED",
-                message: "Invalid session"
+                message: "Identity not found",
             });
         }
 
-        const conversations = await ctx.db
-            .query("conversations")
-            .withIndex("by_contact_session_id", (q) =>
-                q.eq("contactSessionId", args.contactSessionId)
-            )
-            .order("desc")
-            .paginate(args.paginationOpts);
+        const organizationId = identity.orgId as string;
 
-        const conversationsWithLastMessage = await Promise.all(
+        if (!organizationId) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Organization not found",
+            });
+        }
+
+        let conversations: PaginationResult<Doc<"conversations">>;
+
+        if (args.status) {
+            conversations = await ctx.db
+                .query("conversations")
+                .withIndex("by_status_and_organization_id", (q) =>
+                    q
+                        .eq(
+                            "status",
+                            args.status as Doc<"conversations">["status"]
+                        )
+                        .eq("organizationId", organizationId)
+                )
+                .order("desc")
+                .paginate(args.paginationOpts);
+        } else {
+            conversations = await ctx.db
+                .query("conversations")
+                .withIndex("by_organization_id", (q) => q.eq("organizationId", organizationId))
+                .order("desc")
+                .paginate(args.paginationOpts);
+        }
+
+        const conversationWithAdditionalData = await Promise.all(
             conversations.page.map(async (conversation) => {
                 let lastMessage: MessageDoc | null = null;
 
-                const messages = await supportAgent.listMessages(ctx, {
-                    threadId: conversation.threadId,
+                const contactSession = await ctx.db.get(conversation.contactSessionId);
 
-                    // 加载最新条消息，1 页，一条数据
-                    paginationOpts: { numItems: 1, cursor: null }
-                });
-
-                // 找到最后一条消息
-                if (messages.page.length > 0) {
-                    lastMessage = messages.page[0] ?? null
+                if (!contactSession) {
+                    return null;
                 }
 
-                return {
-                    _id: conversation._id,
-                    _createTime: conversation._creationTime,
-                    status: conversation.status,
-                    organizationId: conversation.organizationId,
+                const messages = await supportAgent.listMessages(ctx, {
                     threadId: conversation.threadId,
-                    lastMessage
+                    paginationOpts: {numItems: 1, cursor: null}
+                })
+
+                if (messages.page.length > 0) {
+                    lastMessage = messages.page[0] ?? null 
+                }
+                
+                return {
+                    ...conversation,
+                    lastMessage,
+                    contactSession
                 }
             })
         );
-        
+
+        const validConversations = conversationWithAdditionalData.filter(
+            // "conv is NonNullable<typeof conv>" 是类型守卫（type guard），表示通过过滤的元素一定不是 "Null"
+            (conv): conv is NonNullable<typeof conv> => conv !== null
+        )
+
         return {
             ...conversations,
-            page: conversationsWithLastMessage
+            page: validConversations
         }
     }
 });
