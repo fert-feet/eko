@@ -1,37 +1,51 @@
 "use client";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
-import { ArrowRightIcon, ArrowUpIcon, CheckIcon, CornerUpLeftIcon, ListIcon } from "lucide-react";
-import { ScrollArea } from "@workspace/ui/components/scroll-area";
-import { usePaginatedQuery } from "convex/react";
+import { statusFilterAtom } from "@/modules/dashboard/atoms";
 import { api } from "@workspace/backend/_generated/api";
-import Link from "next/link";
-import { cn } from "@workspace/ui/lib/utils";
-import { usePathname } from "next/navigation";
-import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
-import { formatDistanceToNow } from "date-fns";
 import ConversationStatusIcon from "@workspace/ui/components/conversation-status-icon";
+import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
+import { ScrollArea } from "@workspace/ui/components/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
+import { cn } from "@workspace/ui/lib/utils";
+import { usePaginatedQuery } from "convex/react";
+import { formatDistanceToNow } from "date-fns";
+import { useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
+import { ArrowRightIcon, ArrowUpIcon, CheckIcon, CornerUpLeftIcon, ListIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+// TODO: change this
+import { Doc } from "../../../../../../packages/backend/convex/_generated/dataModel";
 
 const ConversationsPanel = () => {
     const pathname = usePathname();
 
+    const statusFilter = useAtomValue(statusFilterAtom);
+
+    const setStatusFilter = useSetAtom(statusFilterAtom);
+
     const conversations = usePaginatedQuery(
         api.private.conversations.getMany,
         {
-            status: null
+            status: statusFilter === "all" ? null : statusFilter
         },
         {
             initialNumItems: 10
         }
     );
 
+    const onSelect = (value: string) => {
+        setStatusFilter(value as Doc<"conversations">["status"] | "all")
+    }
+
     return (
         <div className="flex flex-col h-full w-full bg-background text-sidebar-foreground">
             <div className="flex flex-col gap-3.5 border-b p-2">
                 <Select
                     defaultValue="all"
-                    onValueChange={() => { }}
-                // value="all"
+                    value={statusFilter}
+                    onValueChange={(value) => onSelect(value)}
                 >
                     <SelectTrigger
                         className="h-8 border-none px-1.5 shadow-none ring-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-0 cursor-pointer"
@@ -85,12 +99,12 @@ const ConversationsPanel = () => {
                                 <div className={cn(
                                     "-translate-y-1/2 absolute top-1/2 left-0 h-[64%] w-1 rounded-r-full bg-neutral-300 opacity-0 transition-opacity",
                                     pathname === `/conversations/${conversation._id}` && "opacity-100"
-                                )}/>
-                                <DicebearAvatar 
-                                seed={conversation.contactSession._id}
-                                size={40}
-                                className="shrink-0"
-                                badgeImageUrl={badgeUrl}
+                                )} />
+                                <DicebearAvatar
+                                    seed={conversation.contactSession._id}
+                                    size={40}
+                                    className="shrink-0"
+                                    badgeImageUrl={badgeUrl}
                                 />
                                 <div className="flex-1">
                                     <div className="flex w-full items-center gap-2">
@@ -107,10 +121,10 @@ const ConversationsPanel = () => {
                                                 <CornerUpLeftIcon className="size-3 shrink-0 text-muted-foreground" />
                                             )}
                                             <span
-                                            className={cn(
-                                                "line-clamp-1 text-muted-foreground text-xs",
-                                                !isLastMessageFromOperator && "font-bold text-black"
-                                            )}
+                                                className={cn(
+                                                    "line-clamp-1 text-muted-foreground text-xs",
+                                                    !isLastMessageFromOperator && "font-bold text-black"
+                                                )}
                                             >
                                                 {conversation.lastMessage?.text}
                                             </span>
