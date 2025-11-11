@@ -34,7 +34,7 @@ const ConversationsPanel = () => {
         }
     );
 
-    const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore } = useInfiniteScroll({
+    const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore, isLoadingFirstPage } = useInfiniteScroll({
         status: conversations.status,
         loadMore: conversations.loadMore,
         loadSize: 5,
@@ -86,71 +86,103 @@ const ConversationsPanel = () => {
                     </SelectContent>
                 </Select>
             </div>
-            <ScrollArea className="max-h-[calc(100vh-53px)]">
-                <div className="flex w-full flex-1 flex-col text-sm">
-                    {conversations.results.map((conversation) => {
-                        const isLastMessageFromOperator = conversation.lastMessage?.message?.role !== "user";
+            {isLoadingFirstPage ? (
+                <SkeletonConversations />
+            ) : (
+                <ScrollArea className="max-h-[calc(100vh-53px)]">
+                    <div className="flex w-full flex-1 flex-col text-sm">
+                        {conversations.results.map((conversation) => {
+                            const isLastMessageFromOperator = conversation.lastMessage?.message?.role !== "user";
 
-                        const badgeUrl = "/eko-logo.svg";
+                            const badgeUrl = "/eko-logo.svg";
 
-                        return (
-                            <Link
-                                key={conversation._id}
-                                href={`/conversations/${conversation._id}`}
-                                className={cn(
-                                    "relative group flex cursor-pointer items-start gap-3 border-b p-4 py-5 text-sm leading-tight hover:text-accent-foreground hover:bg-accent",
-                                    pathname === `/conversations/${conversation._id}` && "bg-accent text-accent-foreground"
-                                )}
-                            >
-                                <div className={cn(
-                                    "-translate-y-1/2 group-hover:opacity-100 absolute top-1/2 left-0 h-[64%] w-1 rounded-r-full bg-neutral-300 opacity-0 transition-opacity",
-                                    pathname === `/conversations/${conversation._id}` && "opacity-100"
-                                )} />
-                                <DicebearAvatar
-                                    seed={conversation.contactSession._id}
-                                    size={40}
-                                    className="shrink-0"
-                                    badgeImageUrl={badgeUrl}
-                                />
-                                <div className="flex-1">
-                                    <div className="flex w-full items-center gap-2">
-                                        <span className="truncate font-bold">
-                                            {conversation.contactSession.name}
-                                        </span>
-                                        <span className="ml-auto shrink-0 text-muted-foreground text-xs">
-                                            {formatDistanceToNow(conversation._creationTime)}
-                                        </span>
-                                    </div>
-                                    <div className="mt-1 flex items-center justify-between gap-2">
-                                        <div className="flex w-0 grow items-center gap-1">
-                                            {isLastMessageFromOperator && (
-                                                <CornerUpLeftIcon className="size-3 shrink-0 text-muted-foreground" />
-                                            )}
-                                            <span
-                                                className={cn(
-                                                    "line-clamp-1 text-muted-foreground text-xs",
-                                                    !isLastMessageFromOperator && "font-bold text-black"
-                                                )}
-                                            >
-                                                {conversation.lastMessage?.text}
+                            return (
+                                <Link
+                                    key={conversation._id}
+                                    href={`/conversations/${conversation._id}`}
+                                    className={cn(
+                                        "relative group flex cursor-pointer items-start gap-3 border-b p-4 py-5 text-sm leading-tight hover:text-accent-foreground hover:bg-accent",
+                                        pathname === `/conversations/${conversation._id}` && "bg-accent text-accent-foreground"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "-translate-y-1/2 group-hover:opacity-100 absolute top-1/2 left-0 h-[64%] w-1 rounded-r-full bg-neutral-300 opacity-0 transition-opacity",
+                                        pathname === `/conversations/${conversation._id}` && "opacity-100"
+                                    )} />
+                                    <DicebearAvatar
+                                        seed={conversation.contactSession._id}
+                                        size={40}
+                                        className="shrink-0"
+                                        badgeImageUrl={badgeUrl}
+                                    />
+                                    <div className="flex-1">
+                                        <div className="flex w-full items-center gap-2">
+                                            <span className="truncate font-bold">
+                                                {conversation.contactSession.name}
+                                            </span>
+                                            <span className="ml-auto shrink-0 text-muted-foreground text-xs">
+                                                {formatDistanceToNow(conversation._creationTime)}
                                             </span>
                                         </div>
-                                        <ConversationStatusIcon status={conversation.status} />
+                                        <div className="mt-1 flex items-center justify-between gap-2">
+                                            <div className="flex w-0 grow items-center gap-1">
+                                                {isLastMessageFromOperator && (
+                                                    <CornerUpLeftIcon className="size-3 shrink-0 text-muted-foreground" />
+                                                )}
+                                                <span
+                                                    className={cn(
+                                                        "line-clamp-1 text-muted-foreground text-xs",
+                                                        !isLastMessageFromOperator && "font-bold text-black"
+                                                    )}
+                                                >
+                                                    {conversation.lastMessage?.text}
+                                                </span>
+                                            </div>
+                                            <ConversationStatusIcon status={conversation.status} />
+                                        </div>
                                     </div>
-                                </div>
-                            </Link>
-                        );
-                    })}
-                    <InfiniteScrollTrigger
-                        canLoadMore={canLoadMore}
-                        isLoadingMore={isLoadingMore}
-                        onLoadMore={handleLoadMore}
-                        ref={topElementRef}
-                    />
-                </div>
-            </ScrollArea>
+                                </Link>
+                            );
+                        })}
+                        <InfiniteScrollTrigger
+                            canLoadMore={canLoadMore}
+                            isLoadingMore={isLoadingMore}
+                            onLoadMore={handleLoadMore}
+                            ref={topElementRef}
+                        />
+                    </div>
+                </ScrollArea>
+            )}
         </div>
     );
 };
 
 export default ConversationsPanel;
+
+export const SkeletonConversations = () => {
+    return (
+        <div className="flex flex-col h-full w-full bg-background text-sidebar-foreground">
+            <ScrollArea className="max-h-[calc(100vh-53px)]">
+                <div className="flex w-full flex-1 flex-col text-sm">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                        <div key={index} className="relative group flex items-start gap-3 border-b p-4 py-5 text-sm leading-tight">
+                            <div className="w-10 h-10 rounded-full bg-muted animate-pulse shrink-0" />
+                            <div className="flex-1">
+                                <div className="flex w-full items-center gap-2">
+                                    <div className="h-4 w-24 bg-muted rounded animate-pulse" />
+                                    <div className="ml-auto h-3 w-12 bg-muted rounded animate-pulse shrink-0" />
+                                </div>
+                                <div className="mt-1 flex items-center justify-between gap-2">
+                                    <div className="flex w-0 grow items-center gap-1">
+                                        <div className="h-3 w-32 bg-muted rounded animate-pulse" />
+                                    </div>
+                                    <div className="w-4 h-4 bg-muted rounded animate-pulse" />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </ScrollArea>
+        </div>
+    )
+}
