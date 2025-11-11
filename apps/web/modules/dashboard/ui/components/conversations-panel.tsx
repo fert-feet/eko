@@ -2,16 +2,34 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { ArrowRightIcon, ArrowUpIcon, CheckIcon, ListIcon } from "lucide-react";
-import { ScrollArea } from "../../../../../../packages/ui/src/components/scroll-area";
+import { ScrollArea } from "@workspace/ui/components/scroll-area";
+import { usePaginatedQuery } from "convex/react";
+import { api } from "@workspace/backend/_generated/api";
+import Link from "next/link";
+import { cn } from "@workspace/ui/lib/utils";
+import { usePathname } from "next/navigation";
+import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
 
 const ConversationsPanel = () => {
+    const pathname = usePathname();
+
+    const conversations = usePaginatedQuery(
+        api.private.conversations.getMany,
+        {
+            status: null
+        },
+        {
+            initialNumItems: 10
+        }
+    );
+
     return (
         <div className="flex flex-col h-full w-full bg-background text-sidebar-foreground">
             <div className="flex flex-col gap-3.5 border-b p-2">
                 <Select
                     defaultValue="all"
                     onValueChange={() => { }}
-                    // value="all"
+                // value="all"
                 >
                     <SelectTrigger
                         className="h-8 border-none px-1.5 shadow-none ring-0 hover:bg-accent hover:text-accent-foreground focus-visible:ring-0 cursor-pointer"
@@ -48,7 +66,42 @@ const ConversationsPanel = () => {
             </div>
             <ScrollArea>
                 <div className="flex w-full flex-1 flex-col text-sm">
-                    abc
+                    {conversations.results.map((conversation) => {
+                        const isLastMessageFromOperator = conversation.lastMessage?.message?.role !== "user";
+
+                        const badgeUrl = "/eko-logo.svg";
+
+                        return (
+                            <Link
+                                key={conversation._id}
+                                href={`/conversations/${conversation._id}`}
+                                className={cn(
+                                    "relative flex cursor-pointer items-start gap-3 border-b p-4 py-5 text-sm leading-tight hover:text-accent-foreground hover:bg-accent",
+                                    pathname === `/conversations/${conversation._id}` && "bg-accent text-accent-foreground"
+                                )}
+                            >
+                                <div className={cn(
+                                    "-translate-y-1/2 absolute top-1/2 left-0 h-[64%] w-1 rounded-r-full bg-neutral-300 opacity-0 transition-opacity",
+                                    pathname === `/conversations/${conversation._id}` && "opacity-100"
+                                )}/>
+                                <DicebearAvatar 
+                                seed={conversation.contactSession._id}
+                                size={40}
+                                className="shrink-0"
+                                />
+                                <div className="flex-1">
+                                    <div className="flex w-full items-center gap-2">
+                                        <span className="truncate font-bold">
+                                            {conversation.contactSession.name}
+                                        </span>
+                                        span
+
+                                    </div>
+
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
             </ScrollArea>
         </div>

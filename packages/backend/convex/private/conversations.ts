@@ -11,7 +11,8 @@ export const getMany = query({
         status: v.union(
             v.literal("unresolved"),
             v.literal("escalated"),
-            v.literal("resolved")
+            v.literal("resolved"),
+            v.null()
         ),
     },
     handler: async (ctx, args) => {
