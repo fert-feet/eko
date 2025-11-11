@@ -41,6 +41,8 @@ export const getMany = query({
 
                 const messages = await supportAgent.listMessages(ctx, {
                     threadId: conversation.threadId,
+
+                    // 加载最新条消息，1 页，一条数据
                     paginationOpts: { numItems: 1, cursor: null }
                 });
 
