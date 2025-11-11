@@ -1,7 +1,7 @@
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
-import { ArrowRightIcon, ArrowUpIcon, CheckIcon, ListIcon } from "lucide-react";
+import { ArrowRightIcon, ArrowUpIcon, CheckIcon, CornerUpLeftIcon, ListIcon } from "lucide-react";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import { usePaginatedQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
@@ -9,6 +9,8 @@ import Link from "next/link";
 import { cn } from "@workspace/ui/lib/utils";
 import { usePathname } from "next/navigation";
 import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
+import { formatDistanceToNow } from "date-fns";
+import ConversationStatusIcon from "@workspace/ui/components/conversation-status-icon";
 
 const ConversationsPanel = () => {
     const pathname = usePathname();
@@ -64,7 +66,7 @@ const ConversationsPanel = () => {
                     </SelectContent>
                 </Select>
             </div>
-            <ScrollArea>
+            <ScrollArea className="max-h-[calc(100vh-53px)]">
                 <div className="flex w-full flex-1 flex-col text-sm">
                     {conversations.results.map((conversation) => {
                         const isLastMessageFromOperator = conversation.lastMessage?.message?.role !== "user";
@@ -88,14 +90,32 @@ const ConversationsPanel = () => {
                                 seed={conversation.contactSession._id}
                                 size={40}
                                 className="shrink-0"
+                                badgeImageUrl={badgeUrl}
                                 />
                                 <div className="flex-1">
                                     <div className="flex w-full items-center gap-2">
                                         <span className="truncate font-bold">
                                             {conversation.contactSession.name}
                                         </span>
-                                        span
-
+                                        <span className="ml-auto shrink-0 text-muted-foreground text-xs">
+                                            {formatDistanceToNow(conversation._creationTime)}
+                                        </span>
+                                    </div>
+                                    <div className="mt-1 flex items-center justify-between gap-2">
+                                        <div className="flex w-0 grow items-center gap-1">
+                                            {isLastMessageFromOperator && (
+                                                <CornerUpLeftIcon className="size-3 shrink-0 text-muted-foreground" />
+                                            )}
+                                            <span
+                                            className={cn(
+                                                "line-clamp-1 text-muted-foreground text-xs",
+                                                !isLastMessageFromOperator && "font-bold text-black"
+                                            )}
+                                            >
+                                                {conversation.lastMessage?.text}
+                                            </span>
+                                        </div>
+                                        <ConversationStatusIcon status={conversation.status} />
                                     </div>
 
                                 </div>
