@@ -2,21 +2,20 @@
 
 import { statusFilterAtom } from "@/modules/dashboard/atoms";
 import { api } from "@workspace/backend/_generated/api";
+import { Doc } from "@workspace/backend/_generated/dataModel";
 import ConversationStatusIcon from "@workspace/ui/components/conversation-status-icon";
 import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
+import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
 import { ScrollArea } from "@workspace/ui/components/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
+import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
 import { cn } from "@workspace/ui/lib/utils";
 import { usePaginatedQuery } from "convex/react";
 import { formatDistanceToNow } from "date-fns";
-import { useSetAtom } from "jotai";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { ArrowRightIcon, ArrowUpIcon, CheckIcon, CornerUpLeftIcon, ListIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-// TODO: change this
-import { Doc } from "../../../../../../packages/backend/convex/_generated/dataModel";
 
 const ConversationsPanel = () => {
     const pathname = usePathname();
@@ -35,9 +34,16 @@ const ConversationsPanel = () => {
         }
     );
 
+    const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore } = useInfiniteScroll({
+        status: conversations.status,
+        loadMore: conversations.loadMore,
+        loadSize: 5,
+        observerEnabled: false
+    });
+
     const onSelect = (value: string) => {
-        setStatusFilter(value as Doc<"conversations">["status"] | "all")
-    }
+        setStatusFilter(value as Doc<"conversations">["status"] | "all");
+    };
 
     return (
         <div className="flex flex-col h-full w-full bg-background text-sidebar-foreground">
@@ -92,12 +98,12 @@ const ConversationsPanel = () => {
                                 key={conversation._id}
                                 href={`/conversations/${conversation._id}`}
                                 className={cn(
-                                    "relative flex cursor-pointer items-start gap-3 border-b p-4 py-5 text-sm leading-tight hover:text-accent-foreground hover:bg-accent",
+                                    "relative group flex cursor-pointer items-start gap-3 border-b p-4 py-5 text-sm leading-tight hover:text-accent-foreground hover:bg-accent",
                                     pathname === `/conversations/${conversation._id}` && "bg-accent text-accent-foreground"
                                 )}
                             >
                                 <div className={cn(
-                                    "-translate-y-1/2 absolute top-1/2 left-0 h-[64%] w-1 rounded-r-full bg-neutral-300 opacity-0 transition-opacity",
+                                    "-translate-y-1/2 group-hover:opacity-100 absolute top-1/2 left-0 h-[64%] w-1 rounded-r-full bg-neutral-300 opacity-0 transition-opacity",
                                     pathname === `/conversations/${conversation._id}` && "opacity-100"
                                 )} />
                                 <DicebearAvatar
@@ -131,11 +137,16 @@ const ConversationsPanel = () => {
                                         </div>
                                         <ConversationStatusIcon status={conversation.status} />
                                     </div>
-
                                 </div>
                             </Link>
                         );
                     })}
+                    <InfiniteScrollTrigger
+                        canLoadMore={canLoadMore}
+                        isLoadingMore={isLoadingMore}
+                        onLoadMore={handleLoadMore}
+                        ref={topElementRef}
+                    />
                 </div>
             </ScrollArea>
         </div>
