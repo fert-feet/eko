@@ -1,3 +1,6 @@
+import { Id } from "@workspace/backend/_generated/dataModel";
+import ConversationIdView from "@/modules/dashboard/ui/view/conversation-id-view";
+
 const Page = async ({
     params
 }: {
@@ -6,11 +9,8 @@ const Page = async ({
     }>;
 }) => {
     const { conversationId } = await params;
-    return (
-        <div>
-            conversationId: {conversationId}
-        </div>
-    );
-};
+
+    return <ConversationIdView conversationId={conversationId as Id<"conversations">} />
+}
 
 export default Page;
