@@ -128,6 +128,13 @@ export const getOne = query({
             });
         }
 
+        if (conversation.organizationId !== organizationId) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Invalid organization ID",
+            });
+        }
+
         const contactSession = await ctx.db.get(conversation.contactSessionId);
 
         if (!contactSession) {
