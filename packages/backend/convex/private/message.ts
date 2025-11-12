@@ -1,42 +1,48 @@
+import { saveMessage } from "@convex-dev/agent";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
-import { internal } from "../_generated/api";
-import { action, query } from "../_generated/server";
+import { components } from "../_generated/api";
+import { mutation, query } from "../_generated/server";
 import { supportAgent } from "../system/ai/agent/supportAgent";
 
-export const create = action({
+// 使用 "mutation" 而不是 "action"，是因为这里不使用 ai，因为我们是管理员，我们直接回复消息
+export const create = mutation({
     args: {
-        contactSessionId: v.id("contactSessions"),
-        threadId: v.string(),
-        prompt: v.string()
+        prompt: v.string(),
+        conversationId: v.id("conversations")
     },
     handler: async (ctx, args) => {
-        const session = await ctx.runQuery(
-            internal.system.contactSessions.getOne,
-            {
-                contactSessionId: args.contactSessionId,
-            }
-        );
+        const identity = await ctx.auth.getUserIdentity();
 
-        if (!session || session.expiresAt < Date.now()) {
+        if (!identity) {
             throw new ConvexError({
                 code: "UNAUTHORIZED",
-                message: "Invalid session"
+                message: "Identity not found",
             });
         }
 
-        // 在 action 中不能直接查，要使用内部方法
-        const conversation = await ctx.runQuery(
-            internal.system.conversations.getByThreadId,
-            {
-                threadId: args.threadId
-            }
-        );
+        const organizationId = identity.orgId as string;
+
+        if (!organizationId) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Organization not found",
+            });
+        }
+
+        const conversation = await ctx.db.get(args.conversationId)
 
         if (!conversation) {
             throw new ConvexError({
-                code: "NOT FOUNT",
-                message: "Conversation not found"
+                code: "NOT_FOUND",
+                message: "Conversation not found",
+            });
+        }
+
+        if (conversation.organizationId !== organizationId) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Invalid organization ID",
             });
         }
 
@@ -47,15 +53,16 @@ export const create = action({
             });
         }
 
-        await supportAgent.generateText(
-            ctx,
-            {
-                threadId: args.threadId
-            },
-            {
-                prompt: args.prompt
+        // 不使用 ai，而是管理员回复
+        await saveMessage(ctx, components.agent, {
+            threadId: conversation.threadId,
+            // TODO: Check if "agentName" is needed or not
+            agentName: identity.familyName,
+            message: {
+                role: "assistant",
+                content: args.prompt
             }
-        );
+        });
     }
 });
 
@@ -84,12 +91,12 @@ export const getMany = query({
         }
 
         const conversation = await ctx.db
-        .query("conversations")
-        .withIndex("by_thread_id", (q) => 
-            q
-                .eq("threadId", args.threadId)
-        )
-        .unique()
+            .query("conversations")
+            .withIndex("by_thread_id", (q) =>
+                q
+                    .eq("threadId", args.threadId)
+            )
+            .unique();
 
         if (!conversation) {
             throw new ConvexError({

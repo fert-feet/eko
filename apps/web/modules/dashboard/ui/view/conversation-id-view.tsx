@@ -10,7 +10,7 @@ import { Conversation, ConversationContent } from "@workspace/ui/components/ai/c
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
 import { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { MoreHorizontalIcon, Wand2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod/v4";
@@ -24,6 +24,7 @@ const ConversationIdView = ({
     conversationId: Id<"conversations">;
 }) => {
     const conversation = useQuery(api.private.conversations.getOne, { conversationId });
+    const createMessage = useMutation(api.private.message.create)
 
     const formSchema = z.object({
         message: z.string().min(1, "Message is Required")
@@ -37,7 +38,16 @@ const ConversationIdView = ({
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+        try {
+            await createMessage({
+                conversationId,
+                prompt: values.message
+            })
+
+            form.reset()
+        } catch (error) {
+            console.error(error) 
+        }
     };
 
     const messages = useThreadMessages(
