@@ -1,22 +1,23 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { toUIMessages, useThreadMessages } from "@convex-dev/agent/react";
-import { Form, FormField } from "@workspace/ui/components/form";
-import { PromptInput, PromptInputFooter, PromptInputProvider, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
-import { Response } from "@workspace/ui/components/ai/response";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@workspace/backend/_generated/api";
+import { Id } from "@workspace/backend/_generated/dataModel";
 import { Conversation, ConversationContent } from "@workspace/ui/components/ai/conversation";
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
-import { Id } from "@workspace/backend/_generated/dataModel";
+import { PromptInput, PromptInputFooter, PromptInputProvider, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
+import { Response } from "@workspace/ui/components/ai/response";
 import { Button } from "@workspace/ui/components/button";
+import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
+import { Form, FormField } from "@workspace/ui/components/form";
+import { InputGroupButton } from "@workspace/ui/components/input-group";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { cn } from "@workspace/ui/lib/utils";
 import { useMutation, useQuery } from "convex/react";
 import { MoreHorizontalIcon, Wand2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod/v4";
-import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
-import { cn } from "@workspace/ui/lib/utils";
-import { InputGroupButton } from "@workspace/ui/components/input-group";
 
 const ConversationIdView = ({
     conversationId
@@ -81,13 +82,17 @@ const ConversationIdView = ({
                             from={message.role === "user" ? "assistant" : "user"}
                             key={message.id}
                         >
-                            <MessageContent
-                            className={cn(
-                                message.role === "user" && "bg-background!"
-                            )}
-                            >
-                                <Response>{message.text}</Response>
-                            </MessageContent>
+                                <MessageContent
+                                    className={cn(
+                                        message.role === "user" && "bg-background!"
+                                    )}
+                                >
+                                    {message.text ? (
+                                        <Response>{message.text}</Response>
+                                    ) : (
+                                        <Spinner />
+                                    )}
+                                </MessageContent>
                             {message.role === "user" && (
                                 <DicebearAvatar
                                     seed={conversation?.contactSessionId ?? "user"}
