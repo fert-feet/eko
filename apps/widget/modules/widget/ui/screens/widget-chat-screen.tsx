@@ -20,6 +20,8 @@ import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
 
 import { Form, FormField } from "@workspace/ui/components/form";
 import z from "zod";
+import { Spinner } from "@workspace/ui/components/spinner";
+import { cn } from "@workspace/ui/lib/utils";
 
 const formSchema = z.object({
     message: z.string().min(1, "Message is Required")
@@ -127,8 +129,16 @@ const WidgetChatScreen = () => {
                                 from={message.role === "user" ? "user" : "assistant"}
                                 key={message.id}
                             >
-                                <MessageContent>
-                                    <Response>{message.text}</Response>
+                                <MessageContent
+                                    className={cn(
+                                        message.role !== "user" && "bg-background!"
+                                    )}
+                                >
+                                    {message.text ? (
+                                        <Response>{message.text}</Response>
+                                    ) : (
+                                        <Spinner />
+                                    )}
                                 </MessageContent>
                                 {message.role === "user" && (
                                     <DicebearAvatar

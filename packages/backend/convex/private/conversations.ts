@@ -69,29 +69,85 @@ export const getMany = query({
 
                 const messages = await supportAgent.listMessages(ctx, {
                     threadId: conversation.threadId,
-                    paginationOpts: {numItems: 1, cursor: null}
-                })
+                    paginationOpts: { numItems: 1, cursor: null }
+                });
 
                 if (messages.page.length > 0) {
-                    lastMessage = messages.page[0] ?? null 
+                    lastMessage = messages.page[0] ?? null;
                 }
-                
+
                 return {
                     ...conversation,
                     lastMessage,
                     contactSession
-                }
+                };
             })
         );
 
         const validConversations = conversationWithAdditionalData.filter(
             // "conv is NonNullable<typeof conv>" 是类型守卫（type guard），表示通过过滤的元素一定不是 "Null"
             (conv): conv is NonNullable<typeof conv> => conv !== null
-        )
+        );
 
         return {
             ...conversations,
             page: validConversations
+        };
+    }
+});
+
+export const getOne = query({
+    args: {
+        conversationId: v.id("conversations"),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Identity not found",
+            });
         }
+
+        const organizationId = identity.orgId as string;
+
+        if (!organizationId) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Organization not found",
+            });
+        }
+
+        const conversation = await ctx.db.get(args.conversationId);
+
+        if (!conversation) {
+            throw new ConvexError({
+                code: "NOT_FOUND",
+                message: "Conversation not found",
+            });
+        }
+
+        if (conversation.organizationId !== organizationId) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Invalid organization ID",
+            });
+        }
+
+        const contactSession = await ctx.db.get(conversation.contactSessionId);
+
+        if (!contactSession) {
+            throw new ConvexError({
+                code: "NOT_FOUND",
+                message: "Contact session not found",
+            });
+        }
+
+        return {
+            ...conversation,
+            contactSession
+        };
+
     }
 });
