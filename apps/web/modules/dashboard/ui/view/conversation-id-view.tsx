@@ -14,7 +14,7 @@ import { Form, FormField } from "@workspace/ui/components/form";
 import { InputGroupButton } from "@workspace/ui/components/input-group";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { cn } from "@workspace/ui/lib/utils";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { MoreHorizontalIcon, Wand2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod/v4";
@@ -52,7 +52,6 @@ const ConversationIdView = ({
                 prompt: values.message
             });
 
-            form.reset();
         } catch (error) {
             console.error(error);
         }
@@ -76,6 +75,29 @@ const ConversationIdView = ({
         loadSize: 5,
         observerEnabled: false
     });
+
+    const [isEnhancing, setIsEnhancing] = useState(false);
+    const enhanceResponse = useAction(api.private.message.enhanceResponse);
+    const handleEnhanceResponse = async () => {
+        setIsEnhancing(true);
+
+        let currentValue = form.getValues("message");
+        try {
+            const response = await enhanceResponse({ prompt: currentValue });
+
+            form.setValue("message", response, {
+                shouldValidate: true,
+                shouldDirty: true,
+                shouldTouch: true
+            });
+
+            form.trigger("message")
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsEnhancing(false);
+        }
+    };
 
     const handleToggleStatus = async () => {
         if (!conversation) {
@@ -192,10 +214,11 @@ const ConversationIdView = ({
                             <PromptInputFooter>
                                 <PromptInputTools>
                                     <InputGroupButton
-                                        disabled={conversation?.status === "resolved"}
+                                        disabled={conversation?.status === "resolved" || isEnhancing || !form.formState.isValid}
+                                        onClick={handleEnhanceResponse}
                                     >
                                         <Wand2Icon />
-                                        <span>Enhance</span>
+                                        {isEnhancing ? "Enhancing..." : "Enhance"}
                                     </InputGroupButton>
                                 </PromptInputTools>
                                 <PromptInputSubmit
