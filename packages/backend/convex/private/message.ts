@@ -31,7 +31,7 @@ export const enhanceResponse = action({
         }
 
         const response = await generateText({
-            model: glm("glm-4-flash-250414"),
+            model: glm("glm-4.5-flash"),
             messages: [
                 {
                     role: "system",
