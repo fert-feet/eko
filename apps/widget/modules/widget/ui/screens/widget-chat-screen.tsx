@@ -7,21 +7,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@workspace/backend/_generated/api";
 import { Conversation, ConversationContent } from "@workspace/ui/components/ai/conversation";
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
-import { PromptInput, PromptInputFooter, PromptInputProvider, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
+import { PromptInput, PromptInputFooter, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
 import { Response } from "@workspace/ui/components/ai/response";
 import { Button } from "@workspace/ui/components/button";
+import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
+import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
+import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
 import { useAction, useQuery } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { ArrowLeftIcon, MenuIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
-import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
-import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
 
 import { Form, FormField } from "@workspace/ui/components/form";
-import z from "zod";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { cn } from "@workspace/ui/lib/utils";
+import z from "zod";
 
 const formSchema = z.object({
     message: z.string().min(1, "Message is Required")
@@ -63,7 +63,7 @@ const WidgetChatScreen = () => {
         status: messages.status,
         loadMore: messages.loadMore,
         loadSize: 5,
-        observerEnabled: true
+        observerEnabled: false
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -175,6 +175,7 @@ const WidgetChatScreen = () => {
                             render={({ field }) => (
                                 <PromptInputTextarea
                                     onChange={field.onChange}
+                                    disabled={conversation?.status === "resolved"} 
                                     placeholder={
                                         conversation?.status === "resolved"
                                             ? "This conversation has been resolved."
