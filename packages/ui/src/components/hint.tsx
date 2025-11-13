@@ -17,7 +17,7 @@ const Hint = ({
 }: HintProps) => {
     return (
         <Tooltip>
-            <TooltipTrigger>{children}</TooltipTrigger>
+            <TooltipTrigger asChild>{children}</TooltipTrigger>
             <TooltipContent>
                 <p>{text}</p>
             </TooltipContent>

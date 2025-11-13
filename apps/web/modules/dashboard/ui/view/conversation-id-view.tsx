@@ -157,11 +157,11 @@ const ConversationIdView = ({
                         >
                             <FormField
                                 control={form.control}
-                                disabled={conversation?.status === "resolved"}
                                 name="message"
                                 render={({ field }) => (
                                     <PromptInputTextarea
                                         onChange={field.onChange}
+                                        disabled={conversation?.status === "resolved"}
                                         placeholder={
                                             conversation?.status === "resolved"
                                                 ? "This conversation has been resolved."
@@ -173,7 +173,9 @@ const ConversationIdView = ({
                             />
                             <PromptInputFooter>
                                 <PromptInputTools>
-                                    <InputGroupButton>
+                                    <InputGroupButton
+                                        disabled={conversation?.status === "resolved"}
+                                    >
                                         <Wand2Icon />
                                         <span>Enhance</span>
                                     </InputGroupButton>
