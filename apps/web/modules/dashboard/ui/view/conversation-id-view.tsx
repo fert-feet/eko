@@ -196,7 +196,7 @@ const ConversationIdView = ({
                                 render={({ field }) => (
                                     <PromptInputTextarea
                                         onChange={field.onChange}
-                                        disabled={conversation?.status === "resolved" || !form.formState.isValid || isEnhancing}
+                                        disabled={conversation?.status === "resolved" || isEnhancing}
                                         placeholder={
                                             conversation?.status === "resolved"
                                                 ? "This conversation has been resolved."

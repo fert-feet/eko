@@ -69,11 +69,11 @@ export const getMany = query({
 
                 const messages = await supportAgent.listMessages(ctx, {
                     threadId: conversation.threadId,
-                    paginationOpts: { numItems: 1, cursor: null }
+                    paginationOpts: { numItems: 2, cursor: null }
                 });
 
                 if (messages.page.length > 0) {
-                    lastMessage = messages.page[0] ?? null;
+                    lastMessage = messages.page.find(msg => msg.text && msg.text.trim() !== "") ?? null;
                 }
 
                 return {
