@@ -6,7 +6,7 @@ import { api } from "@workspace/backend/_generated/api";
 import { Doc, Id } from "@workspace/backend/_generated/dataModel";
 import { Conversation, ConversationContent } from "@workspace/ui/components/ai/conversation";
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
-import { PromptInput, PromptInputFooter, PromptInputProvider, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
+import { PromptInput, PromptInputFooter, PromptInputProvider, PromptInputSubmit, PromptInputTextarea, PromptInputTools, usePromptInputController } from "@workspace/ui/components/ai/prompt-input";
 import { Response } from "@workspace/ui/components/ai/response";
 import { Button } from "@workspace/ui/components/button";
 import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
@@ -52,6 +52,8 @@ const ConversationIdView = ({
                 prompt: values.message
             });
 
+            form.reset()
+
         } catch (error) {
             console.error(error);
         }
@@ -85,13 +87,7 @@ const ConversationIdView = ({
         try {
             const response = await enhanceResponse({ prompt: currentValue });
 
-            form.setValue("message", response, {
-                shouldValidate: true,
-                shouldDirty: true,
-                shouldTouch: true
-            });
-
-            form.trigger("message")
+            form.setValue("message", response)
         } catch (error) {
             console.error(error);
         } finally {
@@ -187,7 +183,6 @@ const ConversationIdView = ({
             </Conversation>
             <div className="p-2">
                 <Form {...form}>
-                    <PromptInputProvider>
                         <PromptInput
                             className="bg-background"
                             onSubmit={(message) => {
@@ -228,7 +223,6 @@ const ConversationIdView = ({
                                 />
                             </PromptInputFooter>
                         </PromptInput>
-                    </PromptInputProvider>
                 </Form>
             </div>
         </div>
