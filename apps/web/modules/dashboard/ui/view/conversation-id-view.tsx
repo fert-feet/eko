@@ -120,7 +120,10 @@ const ConversationIdView = ({
             {/* conversation */}
             <Conversation>
                 <ConversationContent>
-                    {toUIMessages(messages.results ?? [])?.map((message) => (
+                    {toUIMessages(messages.results ?? [])?.filter((message) => {
+                        // 过滤掉没有文本内容且不是用户消息的空消息
+                        return message.role === "user" || (message.role === "assistant" && message.text);
+                    }).map((message) => (
                         <Message
                             from={message.role === "user" ? "assistant" : "user"}
                             key={message.id}

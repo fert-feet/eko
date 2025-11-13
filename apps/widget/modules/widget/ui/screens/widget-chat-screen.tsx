@@ -123,7 +123,10 @@ const WidgetChatScreen = () => {
                         onLoadMore={handleLoadMore}
                         ref={topElementRef}
                     />
-                    {toUIMessages(messages.results ?? [])?.map((message) => {
+                    {toUIMessages(messages.results ?? [])?.filter((message) => {
+                        // 过滤掉没有文本内容且不是用户消息的空消息
+                        return message.role === "user" || (message.role === "assistant" && message.text);
+                    }).map((message) => {
                         return (
                             <Message
                                 from={message.role === "user" ? "user" : "assistant"}
