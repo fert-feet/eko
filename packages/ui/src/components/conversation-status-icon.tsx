@@ -8,12 +8,12 @@ interface ConversationStatusIconProps {
 const statusConfig = {
     resolved: {
         icon: CheckIcon,
-        bgColor: "text-[#3AA647]"
+        bgColor: "text-[#3FB62F]"
     },
 
     escalated: {
         icon: ArrowUpIcon,
-        bgColor: "text-[#DE8833]"
+        bgColor: "text-[#be8b00]"
     },
 
     unresolved: {

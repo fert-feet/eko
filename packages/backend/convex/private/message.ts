@@ -1,9 +1,52 @@
 import { saveMessage } from "@convex-dev/agent";
 import { paginationOptsValidator } from "convex/server";
+import { generateText } from "ai";
 import { ConvexError, v } from "convex/values";
 import { components } from "../_generated/api";
-import { mutation, query } from "../_generated/server";
+import { action, mutation, query } from "../_generated/server";
 import { supportAgent } from "../system/ai/agent/supportAgent";
+import { glm } from "../../glm-provider/glm-provider";
+
+export const enhanceResponse = action({
+    args: {
+        prompt: v.string()
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+
+        if (!identity) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Identity not found",
+            });
+        }
+
+        const organizationId = identity.orgId as string;
+
+        if (!organizationId) {
+            throw new ConvexError({
+                code: "UNAUTHORIZED",
+                message: "Organization not found",
+            });
+        }
+
+        const response = await generateText({
+            model: glm("glm-4.5-flash"),
+            messages: [
+                {
+                    role: "system",
+                    content: "Enhance the operator's message to be more professional, clear, and helpful while maintaining their intent and key information."
+                },
+                {
+                    role: "user",
+                    content: args.prompt
+                }
+            ]
+        });
+        return response.text;
+    }
+});
+
 
 // 使用 "mutation" 而不是 "action"，是因为这里不使用 ai，因为我们是管理员，我们直接回复消息
 export const create = mutation({
@@ -30,7 +73,7 @@ export const create = mutation({
             });
         }
 
-        const conversation = await ctx.db.get(args.conversationId)
+        const conversation = await ctx.db.get(args.conversationId);
 
         if (!conversation) {
             throw new ConvexError({

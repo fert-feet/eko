@@ -43,12 +43,12 @@ export const getMany = query({
                     threadId: conversation.threadId,
 
                     // 加载最新条消息，1 页，一条数据
-                    paginationOpts: { numItems: 1, cursor: null }
+                    paginationOpts: { numItems: 2, cursor: null }
                 });
 
                 // 找到最后一条消息
                 if (messages.page.length > 0) {
-                    lastMessage = messages.page[0] ?? null
+                    lastMessage = messages.page.find(msg => msg.text && msg.text.trim() !== "") ?? null;
                 }
 
                 return {

@@ -115,7 +115,7 @@ const WidgetChatScreen = () => {
                     <MenuIcon />
                 </Button>
             </WidgetHeader>
-            <Conversation>
+            <Conversation className="max-h-[calc(100vh-180px)]">
                 <ConversationContent>
                     <InfiniteScrollTrigger
                         canLoadMore={canLoadMore}
@@ -123,7 +123,10 @@ const WidgetChatScreen = () => {
                         onLoadMore={handleLoadMore}
                         ref={topElementRef}
                     />
-                    {toUIMessages(messages.results ?? [])?.map((message) => {
+                    {toUIMessages(messages.results ?? [])?.filter((message) => {
+                        // 过滤掉没有文本内容且不是用户消息的空消息
+                        return message.role === "user" || (message.role === "assistant" && message.text);
+                    }).map((message) => {
                         return (
                             <Message
                                 from={message.role === "user" ? "user" : "assistant"}
@@ -158,7 +161,6 @@ const WidgetChatScreen = () => {
             </Conversation>
             {/* TODO: Add suggestions */}
             <Form {...form}>
-                <PromptInputProvider>
                     <PromptInput
                         className="rounded-none border-x-0 border-b-0"
                         onSubmit={(message) => {
@@ -191,7 +193,6 @@ const WidgetChatScreen = () => {
                             />
                         </PromptInputFooter>
                     </PromptInput>
-                </PromptInputProvider>
             </Form>
         </>
     );
