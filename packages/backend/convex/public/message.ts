@@ -3,6 +3,8 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "../_generated/api";
 import { action, query } from "../_generated/server";
 import { supportAgent } from "../system/ai/agent/supportAgent";
+import { resolveConversation } from "../system/ai/tools/resolveConversation";
+import { escalateConversation } from "../system/ai/tools/escalateConversation";
 
 export const create = action({
     args: {
@@ -53,7 +55,11 @@ export const create = action({
                 threadId: args.threadId
             },
             {
-                prompt: args.prompt
+                prompt: args.prompt,
+                tools: {
+                    resolveConversation,
+                    escalateConversation
+                },
             }
         );
     }
