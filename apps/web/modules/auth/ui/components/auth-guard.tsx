@@ -4,6 +4,7 @@ import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
 import React from "react";
 import AuthLayer from "../layouts/auth-layout";
 import SignInView from "../views/sign-in-view";
+import { Spinner } from "@workspace/ui/components/spinner";
 
 const AuthGuard = ({
     children
@@ -12,7 +13,7 @@ const AuthGuard = ({
         <>
             <AuthLoading>
                 <AuthLayer>
-                    <p>Loading...</p>
+                    <Spinner className="size-8" />
                 </AuthLayer>
             </AuthLoading>
             <Authenticated>

@@ -20,6 +20,8 @@ import { useForm } from "react-hook-form";
 import z from "zod/v4";
 import ConversationStatusButton from "../components/conversation-status-button";
 import { useState } from "react";
+import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
+import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
 
 const ConversationIdView = ({
     conversationId
@@ -67,6 +69,13 @@ const ConversationIdView = ({
             initialNumItems: 10
         }
     );
+
+    const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore } = useInfiniteScroll({
+        status: messages.status,
+        loadMore: messages.loadMore,
+        loadSize: 5,
+        observerEnabled: false
+    });
 
     const handleToggleStatus = async () => {
         if (!conversation) {
@@ -120,6 +129,12 @@ const ConversationIdView = ({
             {/* conversation */}
             <Conversation>
                 <ConversationContent>
+                    <InfiniteScrollTrigger
+                        canLoadMore={canLoadMore}
+                        isLoadingMore={isLoadingMore}
+                        onLoadMore={handleLoadMore}
+                        ref={topElementRef}
+                    />
                     {toUIMessages(messages.results ?? [])?.filter((message) => {
                         // 过滤掉没有文本内容且不是用户消息的空消息
                         return message.role === "user" || (message.role === "assistant" && message.text);
