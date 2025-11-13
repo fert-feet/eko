@@ -152,7 +152,7 @@ export const getOne = query({
     }
 });
 
-export const updateSattus = mutation({
+export const updateStatus = mutation({
     args: {
         conversationId: v.id("conversations"),
         status: v.union(

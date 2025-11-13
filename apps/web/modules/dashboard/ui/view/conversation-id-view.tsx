@@ -3,7 +3,7 @@
 import { toUIMessages, useThreadMessages } from "@convex-dev/agent/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@workspace/backend/_generated/api";
-import { Id } from "@workspace/backend/_generated/dataModel";
+import { Doc, Id } from "@workspace/backend/_generated/dataModel";
 import { Conversation, ConversationContent } from "@workspace/ui/components/ai/conversation";
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
 import { PromptInput, PromptInputFooter, PromptInputProvider, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
@@ -18,6 +18,8 @@ import { useMutation, useQuery } from "convex/react";
 import { MoreHorizontalIcon, Wand2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod/v4";
+import ConversationStatusButton from "../components/conversation-status-button";
+import { useState } from "react";
 
 const ConversationIdView = ({
     conversationId
@@ -25,7 +27,10 @@ const ConversationIdView = ({
     conversationId: Id<"conversations">;
 }) => {
     const conversation = useQuery(api.private.conversations.getOne, { conversationId });
-    const createMessage = useMutation(api.private.message.create)
+    const createMessage = useMutation(api.private.message.create);
+    const updataConversationStatus = useMutation(api.private.conversations.updateStatus);
+
+    const [isStatusUpdating, setIsStatusUpdating] = useState(false);
 
     const formSchema = z.object({
         message: z.string().min(1, "Message is Required")
@@ -43,11 +48,11 @@ const ConversationIdView = ({
             await createMessage({
                 conversationId,
                 prompt: values.message
-            })
+            });
 
-            form.reset()
+            form.reset();
         } catch (error) {
-            console.error(error) 
+            console.error(error);
         }
     };
 
@@ -63,6 +68,37 @@ const ConversationIdView = ({
         }
     );
 
+    const handleToggleStatus = async () => {
+        if (!conversation) {
+            return;
+        }
+
+        setIsStatusUpdating(true);
+
+        let newStatus: Doc<"conversations">["status"];
+
+        // cycle conversation stastus: "unresolved" => "escalated" => "resolved" => "unresolved"
+        if (conversation.status === "unresolved") {
+            newStatus = "escalated";
+        } else if (conversation.status === "escalated") {
+            newStatus = "resolved";
+        } else {
+            newStatus = "unresolved";
+        }
+
+        try {
+            await updataConversationStatus({
+                conversationId,
+                status: newStatus
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsStatusUpdating(false);
+        }
+
+    };
+
     return (
 
         <div className="flex h-full flex-col bg-muted">
@@ -73,6 +109,13 @@ const ConversationIdView = ({
                 >
                     <MoreHorizontalIcon />
                 </Button>
+                {!!conversation && (
+                    <ConversationStatusButton
+                        onClick={handleToggleStatus}
+                        status={conversation.status}
+                        disabled={isStatusUpdating}
+                    />
+                )}
             </header>
             {/* conversation */}
             <Conversation>
@@ -82,17 +125,17 @@ const ConversationIdView = ({
                             from={message.role === "user" ? "assistant" : "user"}
                             key={message.id}
                         >
-                                <MessageContent
-                                    className={cn(
-                                        message.role === "user" && "bg-background!"
-                                    )}
-                                >
-                                    {message.text ? (
-                                        <Response>{message.text}</Response>
-                                    ) : (
-                                        <Spinner />
-                                    )}
-                                </MessageContent>
+                            <MessageContent
+                                className={cn(
+                                    message.role === "user" && "bg-background!"
+                                )}
+                            >
+                                {message.text ? (
+                                    <Response>{message.text}</Response>
+                                ) : (
+                                    <Spinner />
+                                )}
+                            </MessageContent>
                             {message.role === "user" && (
                                 <DicebearAvatar
                                     seed={conversation?.contactSessionId ?? "user"}
@@ -103,47 +146,47 @@ const ConversationIdView = ({
                 </ConversationContent>
             </Conversation>
             <div className="p-2">
-            <Form {...form}>
-                <PromptInputProvider>
-                    <PromptInput
-                        className="bg-background"
-                        onSubmit={(message) => {
-                            form.setValue("message", message.text || "");
-                            form.handleSubmit(onSubmit)();
-                        }}
-                    >
-                        <FormField
-                            control={form.control}
-                            disabled={conversation?.status === "resolved"}
-                            name="message"
-                            render={({ field }) => (
-                                <PromptInputTextarea
-                                    onChange={field.onChange}
-                                    placeholder={
-                                        conversation?.status === "resolved"
-                                            ? "This conversation has been resolved."
-                                            : "Type your message..."
-                                    }
-                                    value={field.value}
-                                />
-                            )}
-                        />
-                        <PromptInputFooter>
-                            <PromptInputTools>
-                                <InputGroupButton>
-                                    <Wand2Icon />
-                                    <span>Enhance</span>
-                                </InputGroupButton>
-                            </PromptInputTools>
-                            <PromptInputSubmit
-                                disabled={conversation?.status === "resolved" || !form.formState.isValid}
-                                status="ready"
-                                type="submit"
+                <Form {...form}>
+                    <PromptInputProvider>
+                        <PromptInput
+                            className="bg-background"
+                            onSubmit={(message) => {
+                                form.setValue("message", message.text || "");
+                                form.handleSubmit(onSubmit)();
+                            }}
+                        >
+                            <FormField
+                                control={form.control}
+                                disabled={conversation?.status === "resolved"}
+                                name="message"
+                                render={({ field }) => (
+                                    <PromptInputTextarea
+                                        onChange={field.onChange}
+                                        placeholder={
+                                            conversation?.status === "resolved"
+                                                ? "This conversation has been resolved."
+                                                : "Type your message..."
+                                        }
+                                        value={field.value}
+                                    />
+                                )}
                             />
-                        </PromptInputFooter>
-                    </PromptInput>
-                </PromptInputProvider>
-            </Form>
+                            <PromptInputFooter>
+                                <PromptInputTools>
+                                    <InputGroupButton>
+                                        <Wand2Icon />
+                                        <span>Enhance</span>
+                                    </InputGroupButton>
+                                </PromptInputTools>
+                                <PromptInputSubmit
+                                    disabled={conversation?.status === "resolved" || !form.formState.isValid}
+                                    status="ready"
+                                    type="submit"
+                                />
+                            </PromptInputFooter>
+                        </PromptInput>
+                    </PromptInputProvider>
+                </Form>
             </div>
         </div>
     );
