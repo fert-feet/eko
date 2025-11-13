@@ -145,7 +145,7 @@ const ConversationIdView = ({
                 )}
             </header>
             {/* conversation */}
-            <Conversation>
+            <Conversation className="max-h-[calc(100vh-180px)]">
                 <ConversationContent>
                     <InfiniteScrollTrigger
                         canLoadMore={canLoadMore}
@@ -196,7 +196,7 @@ const ConversationIdView = ({
                                 render={({ field }) => (
                                     <PromptInputTextarea
                                         onChange={field.onChange}
-                                        disabled={conversation?.status === "resolved"}
+                                        disabled={conversation?.status === "resolved" || !form.formState.isValid || isEnhancing}
                                         placeholder={
                                             conversation?.status === "resolved"
                                                 ? "This conversation has been resolved."
@@ -217,7 +217,7 @@ const ConversationIdView = ({
                                     </InputGroupButton>
                                 </PromptInputTools>
                                 <PromptInputSubmit
-                                    disabled={conversation?.status === "resolved" || !form.formState.isValid}
+                                    disabled={conversation?.status === "resolved" || !form.formState.isValid || isEnhancing}
                                     status="ready"
                                     type="submit"
                                 />

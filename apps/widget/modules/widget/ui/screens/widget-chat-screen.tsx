@@ -115,7 +115,7 @@ const WidgetChatScreen = () => {
                     <MenuIcon />
                 </Button>
             </WidgetHeader>
-            <Conversation>
+            <Conversation className="max-h-[calc(100vh-180px)]">
                 <ConversationContent>
                     <InfiniteScrollTrigger
                         canLoadMore={canLoadMore}
@@ -161,7 +161,6 @@ const WidgetChatScreen = () => {
             </Conversation>
             {/* TODO: Add suggestions */}
             <Form {...form}>
-                <PromptInputProvider>
                     <PromptInput
                         className="rounded-none border-x-0 border-b-0"
                         onSubmit={(message) => {
@@ -194,7 +193,6 @@ const WidgetChatScreen = () => {
                             />
                         </PromptInputFooter>
                     </PromptInput>
-                </PromptInputProvider>
             </Form>
         </>
     );
