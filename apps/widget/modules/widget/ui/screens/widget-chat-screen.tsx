@@ -63,7 +63,7 @@ const WidgetChatScreen = () => {
         status: messages.status,
         loadMore: messages.loadMore,
         loadSize: 5,
-        observerEnabled: true
+        observerEnabled: false
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -175,6 +175,7 @@ const WidgetChatScreen = () => {
                             render={({ field }) => (
                                 <PromptInputTextarea
                                     onChange={field.onChange}
+                                    disabled={conversation?.status === "resolved" || !form.formState.isValid}
                                     placeholder={
                                         conversation?.status === "resolved"
                                             ? "This conversation has been resolved."
