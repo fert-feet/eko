@@ -1,11 +1,11 @@
+import { saveMessage } from "@convex-dev/agent";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import { components, internal } from "../_generated/api";
 import { action, query } from "../_generated/server";
 import { supportAgent } from "../system/ai/agent/supportAgent";
-import { resolveConversation } from "../system/ai/tools/resolveConversation";
 import { escalateConversation } from "../system/ai/tools/escalateConversation";
-import { saveMessage } from "@convex-dev/agent";
+import { resolveConversation } from "../system/ai/tools/resolveConversation";
 
 export const create = action({
     args: {
@@ -65,6 +65,11 @@ export const create = action({
                         resolveConversation,
                         escalateConversation
                     },
+                    providerOptions: {
+                        "thinking": {
+                            "type": "enabled",
+                        },
+                    }
                 }
             );
         } else {
