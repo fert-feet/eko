@@ -52,7 +52,7 @@ export const addFile = action({
             mimeType
         });
 
-        const {} = await rag.add(ctx, {
+        const {entryId, created} = await rag.add(ctx, {
             // namespace 很重要！文件要在不同组织之间隔离！
             namespace: organizationId,
             text,
@@ -68,6 +68,15 @@ export const addFile = action({
             contentHash: await contentHashFromArrayBuffer(bytes)
         })
 
+        if (!created) {
+            console.log("Entry already exists!");
+            await ctx.storage.delete(storageId) 
+        }
+
+        return {
+            url: await ctx.storage.getUrl(storageId),
+            entryId
+        }
 
     }
 }); 
