@@ -8,6 +8,8 @@ import { url } from "inspector/promises";
 // "as const": 所有属性只读
 const AI_MODEL = {
     image: glm("glm-4v-flash"),
+
+    // TODO: pdf 和 html 的模型还要找
     pdf: glm("glm-4.5-flash"),
     html: glm("glm-4.5-flash")
 } as const;
