@@ -1,7 +1,8 @@
 import { ConvexError, convexToJson, v } from "convex/values";
 import { action } from "../_generated/server";
-import { guessMimeTypeFromContents, guessMimeTypeFromExtension } from "@convex-dev/rag";
+import { contentHashFromArrayBuffer, guessMimeTypeFromContents, guessMimeTypeFromExtension } from "@convex-dev/rag";
 import { extractTextContent } from "../lib/extractTextContent";
+import rag from "../system/ai/rag";
 
 function guessMimeType(filename: string, bytes: ArrayBuffer): string {
     return (
@@ -51,6 +52,22 @@ export const addFile = action({
             mimeType
         });
 
-        
+        const {} = await rag.add(ctx, {
+            // namespace 很重要！文件要在不同组织之间隔离！
+            namespace: organizationId,
+            text,
+            key: filename,
+            title: filename,
+            metadata: {
+                storageId,
+                filename,
+                category: category ?? null
+            },
+
+            // 防止重复上传
+            contentHash: await contentHashFromArrayBuffer(bytes)
+        })
+
+
     }
 }); 
