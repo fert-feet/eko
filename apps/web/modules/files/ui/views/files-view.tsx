@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
 import { usePaginatedQuery } from "convex/react";
 import { FileIcon, MoreHorizontalIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { UploadDialog } from "../components/upload-dialog";
 
 const FilesView = () => {
     const files = usePaginatedQuery(
@@ -35,7 +36,14 @@ const FilesView = () => {
         }
     ];
 
+    // TODO: remove this test code
+    const onOpenChange = () => {
+        return
+    }
+
     return (
+        <>
+        <UploadDialog open={true} onOpenChange={onOpenChange} />
         <div className="flex min-h-screen flex-col bg-muted p-8">
             <div className="mx-auto w-full max-w-3xl">
                 {/* 尝试 "gap-y-2" */}
@@ -143,6 +151,7 @@ const FilesView = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 
