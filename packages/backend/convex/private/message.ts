@@ -96,6 +96,10 @@ export const create = mutation({
             });
         }
 
+        if (conversation.status === "unresolved") {
+            await ctx.db.patch(args.conversationId, { status: "escalated" });
+        }
+
         // 不使用 ai，而是管理员回复
         await saveMessage(ctx, components.agent, {
             threadId: conversation.threadId,
