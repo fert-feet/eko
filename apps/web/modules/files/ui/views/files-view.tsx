@@ -1,14 +1,14 @@
 "use client";
 
+import { api } from "@workspace/backend/_generated/api";
 import { Badge } from "@workspace/ui/components/badge";
 import { Button } from "@workspace/ui/components/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
+import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
 import { usePaginatedQuery } from "convex/react";
 import { FileIcon, MoreHorizontalIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { api } from "../../../../../../packages/backend/convex/_generated/api";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@workspace/ui/components/dropdown-menu";
-import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
 
 const FilesView = () => {
     const files = usePaginatedQuery(
