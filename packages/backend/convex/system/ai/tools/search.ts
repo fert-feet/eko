@@ -5,6 +5,7 @@ import rag from "../rag";
 import { generateText } from "ai";
 import { glm } from "../../../../glm-provider/glm-provider";
 import { supportAgent } from "../agent/supportAgent";
+import { SEARCH_INTERPRETER_PROMPT } from "../constants";
 
 export const search = createTool({
     description: "Search the knowledge base for relevant information to help answer user questions",
@@ -50,7 +51,7 @@ export const search = createTool({
             messages: [
                 {
                     role: "system",
-                    content: "You interpret knowledge base search results and provide helpful, accurate answers to user questions",
+                    content: SEARCH_INTERPRETER_PROMPT,
                 },
                 // 这是说给 ai 听的
                 {

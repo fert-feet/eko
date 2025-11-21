@@ -6,6 +6,7 @@ import { components } from "../_generated/api";
 import { action, mutation, query } from "../_generated/server";
 import { supportAgent } from "../system/ai/agent/supportAgent";
 import { glm } from "../../glm-provider/glm-provider";
+import { OPERATOR_MESSAGE_ENHANCEMENT_PROMPT } from "../system/ai/constants";
 
 export const enhanceResponse = action({
     args: {
@@ -35,7 +36,7 @@ export const enhanceResponse = action({
             messages: [
                 {
                     role: "system",
-                    content: "Enhance the operator's message to be more professional, clear, and helpful while maintaining their intent and key information."
+                    content: OPERATOR_MESSAGE_ENHANCEMENT_PROMPT
                 },
                 {
                     role: "user",
