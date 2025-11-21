@@ -9,9 +9,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
 import { usePaginatedQuery } from "convex/react";
 import { FileIcon, MoreHorizontalIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { useState } from "react";
 import { UploadDialog } from "../components/upload-dialog";
 
 const FilesView = () => {
+    const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
+
     const files = usePaginatedQuery(
         api.private.files.list,
         {},
@@ -36,17 +39,11 @@ const FilesView = () => {
         }
     ];
 
-    // TODO: remove this test code
-    const onOpenChange = () => {
-        return
-    }
-
     return (
         <>
-        <UploadDialog open={true} onOpenChange={onOpenChange} />
+        <UploadDialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen} />
         <div className="flex min-h-screen flex-col bg-muted p-8">
             <div className="mx-auto w-full max-w-3xl">
-                {/* 尝试 "gap-y-2" */}
                 <div className="space-y-2">
                     <h1 className="text-2xl md:text-4xl">
                         Knowledge Base
@@ -58,7 +55,7 @@ const FilesView = () => {
                 <div className="mt-8 rounded-lg border bg-background">
                     <div className="flex items-center justify-end border-b px-6 py-4">
                         <Button
-                            onClick={() => { }}
+                            onClick={() => setUploadDialogOpen(true)}
                         >
                             <PlusIcon />
                             Add New
