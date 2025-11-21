@@ -1,6 +1,7 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { RAG } from "@convex-dev/rag";
 import { components } from "../../_generated/api";
+import { glm } from "../../../glm-provider/glm-provider";
 
 const googleEmbedding = createGoogleGenerativeAI({
   // TODO: 模型不可用
@@ -8,8 +9,8 @@ const googleEmbedding = createGoogleGenerativeAI({
 });
 
 const rag = new RAG(components.rag, {
-  textEmbeddingModel: googleEmbedding.textEmbeddingModel("text-embedding-004"),
-  embeddingDimension: 768, // Needs to match your embedding model
+  textEmbeddingModel: glm.textEmbeddingModel("embedding-3"),
+  embeddingDimension: 512, // Needs to match your embedding model
 });
 
 export default rag;

@@ -44,15 +44,6 @@ const FilesView = () => {
         observerEnabled: false
     });
 
-    const testData = [
-        {
-            id: "1",
-            name: "test",
-            type: "txt",
-            size: "1 B"
-        }
-    ];
-
     return (
         <>
             <DeleteFileDialog
@@ -102,18 +93,17 @@ const FilesView = () => {
                                         );
                                     }
 
-                                    // if (files.results.length === 0) {
-                                    //     return (
-                                    //         <TableRow>
-                                    //             <TableCell className="h-24 text-center" colSpan={4}>
-                                    //                 No files found
-                                    //             </TableCell>
-                                    //         </TableRow>
-                                    //     )
-                                    // }
+                                    if (files.results.length === 0) {
+                                        return (
+                                            <TableRow>
+                                                <TableCell className="h-24 text-center" colSpan={4}>
+                                                    No files found
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    }
 
-                                    // TODO: Change to real files data instead of "testData"
-                                    return testData.map((file) => (
+                                    return files.results.map((file) => (
                                         <TableRow className="hover:bg-muted/50" key={file.id}>
                                             <TableCell className="px-6 py-4 font-medium">
                                                 <div className="flex items-center gap-3">
@@ -143,7 +133,6 @@ const FilesView = () => {
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem
                                                             className="text-destructive"
-                                                            // TODO: change to real data
                                                             onClick={() => handleDeleteClick(file)}
                                                         >
                                                             <TrashIcon className="size-4 mr-2" />
