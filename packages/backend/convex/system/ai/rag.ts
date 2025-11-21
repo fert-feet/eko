@@ -3,6 +3,7 @@ import { RAG } from "@convex-dev/rag";
 import { components } from "../../_generated/api";
 
 const googleEmbedding = createGoogleGenerativeAI({
+  // TODO: 模型不可用
   baseURL: "https://api.mttieeo.com/v1"
 });
 
