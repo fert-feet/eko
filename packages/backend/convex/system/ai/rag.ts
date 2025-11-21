@@ -10,7 +10,7 @@ const googleEmbedding = createGoogleGenerativeAI({
 
 const rag = new RAG(components.rag, {
   textEmbeddingModel: glm.textEmbeddingModel("embedding-3"),
-  embeddingDimension: 512, // Needs to match your embedding model
+  embeddingDimension: 2048, // Needs to match your embedding model
 });
 
 export default rag;
