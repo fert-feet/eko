@@ -42,7 +42,14 @@ export const enhanceResponse = action({
                     role: "user",
                     content: args.prompt
                 }
-            ]
+            ],
+                    providerOptions: {
+                        glm: {
+                            thinking: {
+                                type: "disabled"
+                            }
+                        }
+                    }
         });
         return response.text;
     }

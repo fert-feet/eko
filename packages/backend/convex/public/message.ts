@@ -68,9 +68,11 @@ export const create = action({
                         search
                     },
                     providerOptions: {
-                        "thinking": {
-                            "type": "enabled",
-                        },
+                        glm: {
+                            thinking: {
+                                type: "disabled"
+                            }
+                        }
                     }
                 }
             );

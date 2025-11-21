@@ -59,7 +59,14 @@ export const search = createTool({
                     content: `User asked: ${args.query}\n\nSearch results: ${contextText}`
                 }
             ],
-            model: glm("glm-4.5-flash")
+            model: glm("glm-4.5-flash"),
+            providerOptions: {
+                glm: {
+                    thinking: {
+                        type: "disabled"
+                    }
+                }
+            }
         });
 
         await supportAgent.saveMessage(ctx, {
