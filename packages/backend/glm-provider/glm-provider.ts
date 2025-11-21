@@ -1,13 +1,14 @@
 import {
-    OpenAICompatibleChatLanguageModel
+    OpenAICompatibleChatLanguageModel,
+    OpenAICompatibleEmbeddingModel
 } from '@ai-sdk/openai-compatible';
-import { LanguageModelV2 } from '@ai-sdk/provider';
+import { EmbeddingModelV2, LanguageModelV2 } from '@ai-sdk/provider';
 import {
     FetchFunction,
     loadApiKey,
     withoutTrailingSlash,
 } from '@ai-sdk/provider-utils';
-import { GLMChatModelId } from './glm-chat-settings.js';
+import { GLMChatModelId, GLMEmbeddingModelId } from './glm-chat-settings.js';
 // Import your model id and settings here.
 
 export interface GLMProviderSettings {
@@ -46,6 +47,10 @@ export interface GLMProvider {
     (
         chatModelId: GLMChatModelId,
     ): LanguageModelV2;
+
+    textEmbeddingModel(
+        modelId: GLMEmbeddingModelId,
+    ): EmbeddingModelV2<string>;
 }
 
 export function createGLM(
@@ -93,12 +98,21 @@ export function createGLM(
         );
     };
 
+    const createTextEmbeddingModel = (
+        modelId: GLMEmbeddingModelId,
+    ) =>
+        new OpenAICompatibleEmbeddingModel(
+            modelId,
+            getCommonModelConfig('embedding'),
+        );
+
     const provider = (
         modelId: GLMChatModelId,
         // settings?: ExampleChatSettings,
     ) => createChatModel(modelId);
 
     provider.chatModel = createChatModel;
+    provider.textEmbeddingModel = createTextEmbeddingModel;
 
     return provider;
 }
