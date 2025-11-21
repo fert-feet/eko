@@ -1,7 +1,8 @@
 "use client";
 
 import { api } from "@workspace/backend/_generated/api";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
+import { Button } from "@workspace/ui/components/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@workspace/ui/components/dialog";
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@workspace/ui/components/dropzone";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
@@ -33,11 +34,46 @@ export const UploadDialog = ({
 
         if (file) {
             setUploadedFiles([file]);
-            // TODO: 这是什么意思
             if (!uploadForm.filename) {
                 setUploadForm((prev) => ({ ...prev, filename: file.name }));
             }
         }
+    };
+
+    const handleUpload = async () => {
+        setIsUploading(true);
+        try {
+            const blob = uploadedFiles[0];
+
+            if (!blob) {
+                return;
+            }
+
+            const filename = uploadForm.filename || blob.name;
+
+            await addFile({
+                bytes: await blob.arrayBuffer(),
+                filename,
+                mimeType: blob.type || "text/plain",
+                category: uploadForm.category
+            });
+
+            onFileUploaded?.();
+            handleCancel()
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleCancel = () => {
+        onOpenChange(false);
+        setUploadedFiles([]);
+        setUploadForm({
+            category: "",
+            filename: ""
+        });
     };
 
     return (
@@ -51,54 +87,72 @@ export const UploadDialog = ({
                         Upload document to your knowledge base for AI-powered search and retrieval
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-2">
-                    <Label htmlFor="category">
-                        Category
-                    </Label>
-                    <Input
-                        className="w-full"
-                        id="category"
-                        onChange={(e) => setUploadForm((prev) => ({
-                            ...prev,
-                            category: e.target.value
-                        }))}
-                        placeholder="e.g., Documentation, Support, Product"
-                        type="text"
-                        value={uploadForm.category}
-                    />
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="category">
+                            Category
+                        </Label>
+                        <Input
+                            className="w-full"
+                            id="category"
+                            onChange={(e) => setUploadForm((prev) => ({
+                                ...prev,
+                                category: e.target.value
+                            }))}
+                            placeholder="e.g., Documentation, Support, Product"
+                            type="text"
+                            value={uploadForm.category}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="filename">
+                            Filename{" "}
+                            <span className="text-muted-foreground text-xs">(optional)</span>
+                        </Label>
+                        <Input
+                            className="w-full"
+                            id="filename"
+                            onChange={(e) => setUploadForm((prev) => ({
+                                ...prev,
+                                filename: e.target.value
+                            }))}
+                            placeholder="Override default filename"
+                            type="text"
+                            value={uploadForm.filename}
+                        />
+                    </div>
+                    <Dropzone
+                        accept={{
+                            "application/pdf": [".pdf"],
+                            "text/csv": [".csv"],
+                            "text/plain": [".txt"]
+                        }}
+                        disabled={isUploading}
+                        maxFiles={1}
+                        onDrop={handleFileDrop}
+                        src={uploadedFiles}
+                    >
+                        <DropzoneEmptyState />
+                        <DropzoneContent />
+                    </Dropzone>
                 </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="filename">
-                        Filename{" "}
-                        <span className="text-muted-foreground text-xs">(optional)</span>
-                    </Label>
-                    <Input
-                        className="w-full"
-                        id="filename"
-                        onChange={(e) => setUploadForm((prev) => ({
-                            ...prev,
-                            filename: e.target.value
-                        }))}
-                        placeholder="Override default filename"
-                        type="text"
-                        value={uploadForm.filename}
-                    />
-                </div>
-                <Dropzone
-                    accept={{
-                        "application/pdf": [".pdf"],
-                        "text/csv": [".csv"],
-                        "text/plain": [".txt"]
-                    }}
-                    disabled={isUploading}
-                    maxFiles={1}
-                    onDrop={() => {}}
-                    src={uploadedFiles}
-                >
-                    <DropzoneEmptyState />
-                    <DropzoneContent />
-                </Dropzone>
+                <DialogFooter className="justify-between!">
+                    <Button
+                        disabled={isUploading}
+                        onClick={handleCancel}
+                        variant={"outline"}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleUpload}
+                        disabled={uploadedFiles.length === 0 || isUploading || !uploadForm.category}
+                    >
+                        {isUploading ? "Uploading" : "Upload"}
+                    </Button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );
