@@ -12,8 +12,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@workspace/ui/components/form";
 import { Label } from "@workspace/ui/components/label";
-import { Input } from "../../../../../packages/ui/src/components/input";
-import { Button } from "../../../../../packages/ui/src/components/button";
+import { Input } from "@workspace/ui/components/input";
+import { Button } from "@workspace/ui/components/button";
 
 const vapiFeatures: Feature[] = [
     {
@@ -74,6 +74,8 @@ const VapiView = () => {
                         privateApiKey: values.privateApiKey
                     }
                 });
+                setOpen(false)
+                toast.success("Secret key created")
             } catch (error) {
                 console.error(error);
                 toast.error("wrong!");
@@ -170,7 +172,7 @@ const VapiView = () => {
                             serviceImage="/vapi.svg"
                             serviceName="Vapi"
                             features={vapiFeatures}
-                            isDisabled={vapiPlugin === undefined}
+                            isDisabled={vapiPlugin !== undefined}
                         />
                     </div>
                 </div>

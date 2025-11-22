@@ -1,9 +1,6 @@
-import { vEntryId } from "@convex-dev/rag";
 import { ConvexError, v } from "convex/values";
-import { Id } from "../_generated/dataModel";
-import { mutation } from "../_generated/server";
-import rag from "../system/ai/rag";
 import { internal } from "../_generated/api";
+import { mutation } from "../_generated/server";
 
 export const upsert = mutation({
     args: {
