@@ -74,8 +74,8 @@ const VapiView = () => {
                         privateApiKey: values.privateApiKey
                     }
                 });
-                setOpen(false)
-                toast.success("Secret key created")
+                setOpen(false);
+                toast.success("Secret key created");
             } catch (error) {
                 console.error(error);
                 toast.error("wrong!");
@@ -150,11 +150,11 @@ const VapiView = () => {
 
     const handleSubmit = () => {
         if (vapiPlugin) {
-            setRemoveOpen(true)
+            setRemoveOpen(true);
         } else {
-            setConnectOpen(true)
+            setConnectOpen(true);
         }
-    }
+    };
 
     return (
         <>
@@ -167,13 +167,17 @@ const VapiView = () => {
                     </div>
 
                     <div className="mt-8">
-                        <PluginCard
-                            onSubmit={handleSubmit}
-                            serviceImage="/vapi.svg"
-                            serviceName="Vapi"
-                            features={vapiFeatures}
-                            isDisabled={vapiPlugin !== undefined && vapiPlugin !== null}
-                        />
+                        {vapiPlugin ? (
+                                <p className="text-2xl font-bold">Connected!</p>
+                        ) : (
+                            <PluginCard
+                                onSubmit={handleSubmit}
+                                serviceImage="/vapi.svg"
+                                serviceName="Vapi"
+                                features={vapiFeatures}
+                                isDisabled={vapiPlugin === undefined}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
