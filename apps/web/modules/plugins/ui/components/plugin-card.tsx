@@ -1,6 +1,6 @@
 import { ArrowLeftRightIcon, LucideIcon, PlugIcon } from "lucide-react";
 import Image from "next/image";
-import { Button } from "../../../../../../packages/ui/src/components/button";
+import { Button } from "@workspace/ui/components/button";
 
 export interface Feature {
     icon: LucideIcon;
