@@ -172,7 +172,7 @@ const VapiView = () => {
                             serviceImage="/vapi.svg"
                             serviceName="Vapi"
                             features={vapiFeatures}
-                            isDisabled={vapiPlugin !== undefined}
+                            isDisabled={vapiPlugin !== undefined && vapiPlugin !== null}
                         />
                     </div>
                 </div>
