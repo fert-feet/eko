@@ -4,6 +4,7 @@ import {
     S3Client,
 } from '@aws-sdk/client-s3';
 import type { Readable } from 'node:stream';
+import { CompactEncrypt, compactDecrypt } from 'jose';
 
 const s3Client = new S3Client({
     endpoint: process.env.S3_ENDPOINT,
@@ -15,6 +16,14 @@ const s3Client = new S3Client({
 });
 
 const bucketName = process.env.S3_BUCKET_NAME ?? '';
+
+const getKey = () => {
+    const keyString = process.env.S3_ENCRYPTION_KEY;
+    if (!keyString) {
+        throw new Error('Missing environment variable: S3_ENCRYPTION_KEY');
+    }
+    return new TextEncoder().encode(keyString);
+};
 
 type S3Body = Readable | Uint8Array | { transformToString: () => Promise<string>; };
 
@@ -28,7 +37,7 @@ const streamToString = async (body?: S3Body): Promise<string> => {
     }
 
     if (body instanceof Uint8Array) {
-        return Buffer.from(body).toString('utf-8');
+        return new TextDecoder().decode(body);
     }
 
     return new Promise<string>((resolve, reject) => {
@@ -44,14 +53,18 @@ export const upsertSecret = async (
     secretName: string,
     secretValue: Record<string, unknown>,
 ) => {
-    const body = JSON.stringify(secretValue);
+    const jsonContent = JSON.stringify(secretValue);
+    
+    const encryptedJwt = await new CompactEncrypt(new TextEncoder().encode(jsonContent))
+        .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
+        .encrypt(getKey());
 
     await s3Client.send(
         new PutObjectCommand({
             Bucket: bucketName,
             Key: secretName,
-            Body: body,
-            ContentType: 'application/json',
+            Body: encryptedJwt,
+            ContentType: 'application/jose', 
         }),
     );
 };
@@ -67,10 +80,18 @@ export const getSecretValue = async (
             }),
         );
 
-        const content = await streamToString(result.Body as S3Body);
-        return JSON.parse(content);
+        const jweString = await streamToString(result.Body as S3Body);
+        
+        if (!jweString) return null;
+
+        const { plaintext } = await compactDecrypt(jweString, getKey());
+        
+        const decodedString = new TextDecoder().decode(plaintext);
+        return JSON.parse(decodedString);
+
     } catch (error) {
         const err = error as { name?: string; $metadata?: { httpStatusCode?: number; }; };
+        
         if (err?.name === 'NoSuchKey' || err?.$metadata?.httpStatusCode === 404) {
             return null;
         }
