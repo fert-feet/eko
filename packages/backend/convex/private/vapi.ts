@@ -76,7 +76,7 @@ export const getPhoneNumbers = action({
     }
 });
 
-export const getAssistans = action({
+export const getAssistants = action({
     args: {
 
     },

@@ -1,21 +1,12 @@
 "use client";
 
+import { Badge } from "@workspace/ui/components/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@workspace/ui/components/table";
 import { CheckCircleIcon, PhoneIcon, XCircleIcon } from "lucide-react";
-import { toast } from "sonner";
-import { Badge } from "@workspace/ui/components/badge";
 import { useVapiPhoneNumbers } from "../hooks/use-vapi-data";
 
 const VapiPhoneNumbersTab = () => {
     const { data: phoneNumbers, isLoading } = useVapiPhoneNumbers();
-
-    const copyToClipboard = async (text: string) => {
-        try {
-            await navigator.clipboard.writeText(text);
-        } catch {
-            toast.error("Failed to copy");
-        }
-    };
 
     return (
         <div className="boder-t bg-background">

@@ -36,3 +36,35 @@ export const useVapiPhoneNumbers = (): {
 
     return { data, isLoading, error };
 };
+
+type Assistants = typeof api.private.vapi.getAssistants._returnType;
+export const useVapiAssistants = (): {
+    data: Assistants;
+    isLoading: boolean;
+    error: Error | null;
+} => {
+    const [data, setData] = useState<Assistants>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+
+    const getAssistants = useAction(api.private.vapi.getAssistants);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                const result = await getAssistants();
+                setData(result);
+            } catch (error) {
+                setError(error as Error);
+                toast.error("Failed to fetch assistants");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [getAssistants]);
+
+    return { data, isLoading, error };
+};
