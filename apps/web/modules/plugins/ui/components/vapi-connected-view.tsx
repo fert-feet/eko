@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@workspace/ui/components/tabs";
+import VapiPhoneNumbersTab from "./vapi-phone-number";
 
 interface VapiConnectedViewProps {
     onDisconnect: () => void;
@@ -86,7 +87,7 @@ const VapiConnectedView = ({ onDisconnect }: VapiConnectedViewProps) => {
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value="phone-numbers">
-                        TODO: Phone numbers
+                        <VapiPhoneNumbersTab />
                     </TabsContent>
                     <TabsContent value="assistants">
                         TODO: Assistants
