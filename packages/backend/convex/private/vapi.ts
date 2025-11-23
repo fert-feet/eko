@@ -50,7 +50,7 @@ export const getPhoneNumbers = action({
         }>(secret);
 
         // TODO: remove this test log
-        console.log(JSON.stringify(secretData));
+        console.log("secretData", JSON.stringify(secretData));
 
         if (!secretData) {
             throw new ConvexError({
