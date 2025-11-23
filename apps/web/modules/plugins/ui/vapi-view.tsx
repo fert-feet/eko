@@ -93,7 +93,6 @@ const VapiView = () => {
         );
     };
 
-
     const VapiPluginForm = ({
         open,
         setOpen
