@@ -4,7 +4,7 @@ import { api, internal } from "../_generated/api";
 import { getSecretValue, parseSecretSrting } from "../lib/secrets";
 import { VapiClient } from "@vapi-ai/server-sdk";
 
-export const getPhoneNumber = action({
+export const getPhoneNumbers = action({
     args: {
 
     },
