@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@workspace/
 import { Label } from "@workspace/ui/components/label";
 import { Input } from "@workspace/ui/components/input";
 import { Button } from "@workspace/ui/components/button";
+import VapiConnectedView from "./components/vapi-connected-view";
 
 const vapiFeatures: Feature[] = [
     {
@@ -48,6 +49,49 @@ const VapiView = () => {
         publicApiKey: z.string().min(1, { message: "Public API key is required" }),
         privateApiKey: z.string().min(1, { message: "Private API key is required" }),
     });
+
+    const VapiPluginRemoveForm = ({
+        open,
+        setOpen
+    }: {
+        open: boolean;
+        setOpen: (value: boolean) => void;
+    }) => {
+        const removePlugin = useMutation(api.private.plugins.remove);
+
+        const onSubmit = async () => {
+            try {
+                await removePlugin({
+                    service: "vapi",
+                });
+                setOpen(false);
+                toast.success("Vapi plugin removed");
+            } catch (error) {
+                console.error(error);
+                toast.error("wrong!");
+            }
+        };
+
+        return (
+            <Dialog onOpenChange={setOpen} open={open}>
+                <DialogContent className="sm:max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle>
+                            Disconnect Vapi
+                        </DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to disconnect the Vapi plugin?
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button onClick={onSubmit} variant={"destructive"}>
+                            Disconnect
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        );
+    };
 
     const VapiPluginForm = ({
         open,
@@ -148,7 +192,7 @@ const VapiView = () => {
         );
     };
 
-    const handleSubmit = () => {
+    const toggleConnection = () => {
         if (vapiPlugin) {
             setRemoveOpen(true);
         } else {
@@ -159,6 +203,7 @@ const VapiView = () => {
     return (
         <>
             <VapiPluginForm open={connectOpen} setOpen={setConnectOpen} />
+            <VapiPluginRemoveForm open={removeOpen} setOpen={setRemoveOpen} />
             <div className="flex min-h-screen flex-col bg-muted p-8">
                 <div className="mx-auto w-full max-w-3xl">
                     <div className="space-y-2">
@@ -168,10 +213,10 @@ const VapiView = () => {
 
                     <div className="mt-8">
                         {vapiPlugin ? (
-                                <p className="text-2xl font-bold">Connected!</p>
+                            <VapiConnectedView onDisconnect={toggleConnection} />
                         ) : (
                             <PluginCard
-                                onSubmit={handleSubmit}
+                                onSubmit={toggleConnection}
                                 serviceImage="/vapi.svg"
                                 serviceName="Vapi"
                                 features={vapiFeatures}

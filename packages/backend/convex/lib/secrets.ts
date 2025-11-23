@@ -71,7 +71,7 @@ export const upsertSecret = async (
 
 export const getSecretValue = async (
     secretName: string,
-): Promise<Record<string, unknown> | null> => {
+): Promise<string | null> => {
     try {
         const result = await s3Client.send(
             new GetObjectCommand({
@@ -87,8 +87,8 @@ export const getSecretValue = async (
         const { plaintext } = await compactDecrypt(jweString, getKey());
         
         const decodedString = new TextDecoder().decode(plaintext);
-        return JSON.parse(decodedString);
 
+        return decodedString;
     } catch (error) {
         const err = error as { name?: string; $metadata?: { httpStatusCode?: number; }; };
         
@@ -99,3 +99,17 @@ export const getSecretValue = async (
         throw error;
     }
 };
+
+export function parseSecretSrting<T = Record<string, unknown>>(
+    secret: string | null
+): T | null {
+    if (!secret) {
+        return null 
+    }
+
+    try {
+        return JSON.parse(secret) as T
+    } catch {
+        return null
+    }
+}
