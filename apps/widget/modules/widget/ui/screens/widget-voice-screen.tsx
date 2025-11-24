@@ -6,6 +6,8 @@ import WidgetHeader from "../components/widget-header";
 import WidgetFooter from "../components/widget-footer";
 import { useVapi } from "../../hooks/use-vapi";
 import { cn } from "@workspace/ui/lib/utils";
+import { Conversation, ConversationContent, ConversationScrollButton } from "@workspace/ui/components/ai/conversation";
+import { Message, MessageContent } from "@workspace/ui/components/ai/message";
 
 const WidgetVoiceScreen = () => {
     const setScreen = useSetAtom(screenAtom);
@@ -32,13 +34,28 @@ const WidgetVoiceScreen = () => {
                     <p>Voice call</p>
                 </div>
             </WidgetHeader>
-            {JSON.stringify(transcript, null, 2)}
-            <div className="flex flex-1 h-full flex-col items-center justify-center gap-y-4">
-                <div className="flex items-center justify-center rounded-full border bg-white p-3">
-                    <MicIcon className="size-6 text-muted-foreground" />
+            {transcript.length > 0 ? (
+                <Conversation className="h-full flex-1">
+                    <ConversationContent>
+                        {transcript.map((message, index) => (
+                            <Message
+                                from={message.role}
+                                key={`${message.role}-${index}-${message.text}`}
+                            >
+                                <MessageContent>{message.text}</MessageContent>
+                            </Message>
+                        ))}
+                    </ConversationContent>
+                    <ConversationScrollButton />
+                </Conversation>
+            ) : (
+                <div className="flex flex-1 h-full flex-col items-center justify-center gap-y-4">
+                    <div className="flex items-center justify-center rounded-full border bg-white p-3">
+                        <MicIcon className="size-6 text-muted-foreground" />
+                    </div>
+                    <p className="text-muted-foreground">Transcript will appear here</p>
                 </div>
-                <p className="text-muted-foreground">Transcript will appear here</p>
-            </div>
+            )}
             <div className="border-t bg-background p-4">
                 <div className="flex flex-col items-center gap-y-4">
                     {isConnected && (
