@@ -49,9 +49,6 @@ export const getPhoneNumbers = action({
             privateApiKey: string;
         }>(secret);
 
-        // TODO: remove this test log
-        console.log("secretData", JSON.stringify(secretData));
-
         if (!secretData) {
             throw new ConvexError({
                 code: "NOT_FOUND",

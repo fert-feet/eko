@@ -1,6 +1,6 @@
 "use client";
 
-import { contactSessionIdAtomFaily, errorMessageAtom, loadingMessageAtom, organizationIdAtom, screenAtom, widgetSettingsAtom } from "@/modules/widget/atoms/widget-atoms";
+import { contactSessionIdAtomFaily, errorMessageAtom, loadingMessageAtom, organizationIdAtom, screenAtom, vapiSecretsAtom, widgetSettingsAtom } from "@/modules/widget/atoms/widget-atoms";
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { api } from "@workspace/backend/_generated/api";
 import { Spinner } from "@workspace/ui/components/spinner";
@@ -11,17 +11,18 @@ import { useEffect, useState } from "react";
 type InitStep = "storage" | "org" | "session" | "setting" | "vapi" | "done";
 
 const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null; }) => {
-    const [step, setSetp] = useState<InitStep>("org");
+    const [step, setStep] = useState<InitStep>("org");
     const [sessionValid, setSessionValid] = useState(false);
 
-    const loadingMessage = useAtomValue(loadingMessageAtom);
     const setErrorMessage = useSetAtom(errorMessageAtom);
     const setLoadingMessage = useSetAtom(loadingMessageAtom);
     const setWidgetSettings = useSetAtom(widgetSettingsAtom);
     const setOrganizationId = useSetAtom(organizationIdAtom);
     const setScreen = useSetAtom(screenAtom);
+    const setVapiSecrets = useSetAtom(vapiSecretsAtom);
 
     const contactSessionId = useAtomValue(contactSessionIdAtomFaily(organizationId));
+    const loadingMessage = useAtomValue(loadingMessageAtom);
 
     const validateOrganization = useAction(api.public.organizations.validate);
 
@@ -45,7 +46,7 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
             .then((result) => {
                 if (result?.valid) {
                     setOrganizationId(organizationId);
-                    setSetp("session");
+                    setStep("session");
                 } else {
                     setErrorMessage(result?.reason || "Invalid configuration");
                     setScreen("error");
@@ -68,7 +69,7 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
 
         if (!contactSessionId) {
             setSessionValid(false);
-            setSetp("setting");
+            setStep("setting");
             return;
         }
 
@@ -80,46 +81,73 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
 
             .then((result) => {
                 setSessionValid(result.valid);
-                setSetp("setting");
+                setStep("setting");
             })
             .catch(() => {
                 setSessionValid(false);
-                setSetp("setting");
+                setStep("setting");
             });
     }, [step, contactSessionId, validateContactSession, setLoadingMessage]);
 
     // Step 3: Load Widget Settings
-    const widgetSettings = useQuery(api.public.widgetSettings.getByOrganizationId, 
+    const widgetSettings = useQuery(api.public.widgetSettings.getByOrganizationId,
         organizationId ? {
             organizationId
         } : "skip"
-    )
+    );
 
     useEffect(() => {
         if (step !== "setting") {
-            return
+            return;
         }
 
-        setLoadingMessage("Loading widget settings...")
+        setLoadingMessage("Loading widget settings...");
 
         if (widgetSettings !== undefined && organizationId) {
-            setWidgetSettings(widgetSettings)
-            setSetp("done")
+            setWidgetSettings(widgetSettings);
+            setStep("vapi");
         }
     }, [
         step,
         widgetSettings,
         setWidgetSettings,
         setLoadingMessage
-    ])
+    ]);
 
+    // Step 4: Load Vapi Secrets (Optional)
+    const getVapiSecrets = useAction(api.public.secrets.getVapiSecrets);
+    useEffect(() => {
+        if (step !== "vapi" || !organizationId) {
+            return;
+        }
+
+        setLoadingMessage("Loading voice features...");
+        getVapiSecrets({ organizationId })
+            .then((secrets) => {
+                setVapiSecrets(secrets);
+                setStep("done");
+            })
+            .catch(() => {
+                setVapiSecrets(null);
+                setStep("done");
+            });
+    }, [
+        step,
+        organizationId,
+        getVapiSecrets,
+        setVapiSecrets,
+        setLoadingMessage,
+        setStep,
+    ]);
+
+    // Final step: Done
     useEffect(() => {
         if (step !== "done") {
             return;
         }
 
         const hasValidSession = contactSessionId && sessionValid;
-        setScreen(hasValidSession ? "selection" : "auth")
+        setScreen(hasValidSession ? "selection" : "auth");
     }, [step, contactSessionId, sessionValid, setScreen]);
 
     return (
