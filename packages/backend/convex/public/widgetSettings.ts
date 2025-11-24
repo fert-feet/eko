@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query } from "../_generated/server";
 
-export const getMany = query({
+export const getByOrganizationId = query({
     args: {
 
         organizationId: v.string()
