@@ -26,7 +26,9 @@ export default function RootLayout({
       >
         <ClerkProvider>
           <ConvexClientProvider>
+            <div className="w-screen h-screen">
               {children}
+            </div>
           </ConvexClientProvider>
         </ClerkProvider>
       </body>
