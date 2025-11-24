@@ -35,7 +35,7 @@ const WidgetVoiceScreen = () => {
                 </div>
             </WidgetHeader>
             {transcript.length > 0 ? (
-                <Conversation className="h-full flex-1">
+                <Conversation className="h-full">
                     <ConversationContent>
                         {transcript.map((message, index) => (
                             <Message

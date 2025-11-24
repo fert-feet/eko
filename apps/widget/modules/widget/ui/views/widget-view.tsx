@@ -9,6 +9,7 @@ import WidgetSelectionScreen from "@/modules/widget/ui/screens/widget-selection-
 import { useAtomValue } from "jotai";
 import WidgetInboxScreen from "@/modules/widget/ui/screens/widget-inbox-screen";
 import WidgetVoiceScreen from "../screens/widget-voice-screen";
+import WidgetContactView from "../screens/widget-contact-screen";
 
 interface Props {
     organizationId: string | null;
@@ -25,12 +26,12 @@ const WidgetView = ({ organizationId }: Props) => {
         inbox: <WidgetInboxScreen />,
         selection: <WidgetSelectionScreen />,
         chat: <WidgetChatScreen />,
-        contact: <p>TODO: Contact</p>,
+        contact: <WidgetContactView />
     };
 
     return (
         <>
-            <main className="min-h-screen min-w-screen flex h-full w-full flex-col overflow-hidden rounded-xl border bg-muted">
+            <main className="flex h-full w-full flex-col overflow-hidden rounded-xl border bg-muted">
                 {screenComponents[screen]}
             </main>
         </>
