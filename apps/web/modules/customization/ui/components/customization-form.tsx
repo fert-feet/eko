@@ -13,23 +13,11 @@ import { Input } from "@workspace/ui/components/input";
 import { Button } from "@workspace/ui/components/button";
 import { Spinner } from "@workspace/ui/components/spinner";
 import VapiFormFields from "./vapi-form-fields";
+import { FormSchema } from "../../types";
+import { widgetSettingsSchema } from "../../schemas";
 
-// Combined schema for all widget settings
-export const widgetSettingsSchema = z.object({
-    greetMessage: z.string().min(1, "Greeting message is required"),
-    defaultSuggestions: z.object({
-        suggestion1: z.string().optional(),
-        suggestion2: z.string().optional(),
-        suggestion3: z.string().optional(),
-    }),
-    vapiSettings: z.object({
-        assistantId: z.string().optional(),
-        phoneNumber: z.string().optional(),
-    }),
-});
 
 type WidgetSettings = Doc<"widgetSettings">;
-export type FormSchema = z.infer<typeof widgetSettingsSchema>;
 
 interface CustomizationFormProps {
     initialData?: WidgetSettings | null;

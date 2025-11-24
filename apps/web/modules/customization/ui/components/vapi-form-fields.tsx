@@ -1,9 +1,9 @@
 import { useVapiAssistants, useVapiPhoneNumbers } from "@/modules/plugins/ui/hooks/use-vapi-data";
 import { UseFormReturn } from "react-hook-form";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@workspace/ui/components/form";
-import { FormSchema } from "./customization-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@workspace/ui/components/select";
 import { Badge } from "@workspace/ui/components/badge";
+import { FormSchema } from "../../types";
 
 interface VapiFormFieldsProps {
     form: UseFormReturn<FormSchema>;
