@@ -16,6 +16,7 @@
     "@convex-dev/agent": "^0.2.12",
     "@hookform/resolvers": "^5.2.2",
     "@sentry/nextjs": "^10",
+    "@vapi-ai/web": "^2.5.1",
     "@workspace/backend": "workspace:*",
     "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
