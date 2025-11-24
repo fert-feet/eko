@@ -102,7 +102,7 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
 
         setLoadingMessage("Loading widget settings...")
 
-        if (widgetSettings !== undefined) {
+        if (widgetSettings !== undefined && organizationId) {
             setWidgetSettings(widgetSettings)
             setSetp("done")
         }

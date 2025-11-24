@@ -1,10 +1,11 @@
 "use client";
 
-import { contactSessionIdAtomFaily, conversationIdAtom, organizationIdAtom, screenAtom } from "@/modules/widget/atoms/widget-atoms";
+import { contactSessionIdAtomFaily, conversationIdAtom, organizationIdAtom, screenAtom, widgetSettingsAtom } from "@/modules/widget/atoms/widget-atoms";
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { toUIMessages, useThreadMessages } from "@convex-dev/agent/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@workspace/backend/_generated/api";
+import { Suggestion, Suggestions } from "@workspace/ui/components/ai/suggestion";
 import { Conversation, ConversationContent } from "@workspace/ui/components/ai/conversation";
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
 import { PromptInput, PromptInputFooter, PromptInputSubmit, PromptInputTextarea, PromptInputTools } from "@workspace/ui/components/ai/prompt-input";
@@ -22,6 +23,7 @@ import { Form, FormField } from "@workspace/ui/components/form";
 import { Spinner } from "@workspace/ui/components/spinner";
 import { cn } from "@workspace/ui/lib/utils";
 import z from "zod";
+import { useMemo } from "react";
 
 const formSchema = z.object({
     message: z.string().min(1, "Message is Required")
@@ -32,8 +34,21 @@ const WidgetChatScreen = () => {
 
     const conversationId = useAtomValue(conversationIdAtom);
     const organizationId = useAtomValue(organizationIdAtom);
+    const widgetSettings = useAtomValue(widgetSettingsAtom);
 
     const contactSessionId = useAtomValue(contactSessionIdAtomFaily(organizationId));
+
+    const suggestions = useMemo(() => {
+        if (!widgetSettings) {
+            return [];
+        }
+
+        return Object.keys(widgetSettings.defaultSuggestions).map((key) => {
+            return widgetSettings.defaultSuggestions[
+                key as keyof typeof widgetSettings.defaultSuggestions
+            ];
+        });
+    }, [widgetSettings]);
 
     const conversation = useQuery(api.public.conversations.getOne,
         conversationId && contactSessionId ?
@@ -159,7 +174,30 @@ const WidgetChatScreen = () => {
                     })}
                 </ConversationContent>
             </Conversation>
-            {/* TODO: Add suggestions */}
+            {toUIMessages(messages.results ?? [])?.length === 1 && (
+                <Suggestions className="flex w-full items-end flex-col p-2">
+                    {suggestions.map((suggestion) => {
+                        if (!suggestion) {
+                            return null;
+                        }
+
+                        return (
+                            <Suggestion
+                                key={suggestion}
+                                onClick={() => {
+                                    form.setValue("message", suggestion, {
+                                        shouldValidate: true,
+                                        shouldDirty: true,
+                                        shouldTouch: true
+                                    });
+                                    form.handleSubmit(onSubmit)();
+                                }}
+                                suggestion={suggestion}
+                            />
+                        );
+                    })}
+                </Suggestions>
+            )}
             <Form {...form}>
                 <PromptInput
                     className="rounded-none border-x-0 border-b-0"
