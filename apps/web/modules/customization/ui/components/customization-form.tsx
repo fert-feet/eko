@@ -9,9 +9,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Textarea } from "@workspace/ui/components/textarea";
 import { Separator } from "@workspace/ui/components/separator";
-import { Input } from "../../../../../../packages/ui/src/components/input";
-import { Button } from "../../../../../../packages/ui/src/components/button";
-import { Spinner } from "../../../../../../packages/ui/src/components/spinner";
+import { Input } from "@workspace/ui/components/input";
+import { Button } from "@workspace/ui/components/button";
+import { Spinner } from "@workspace/ui/components/spinner";
 
 // Combined schema for all widget settings
 export const widgetSettingsSchema = z.object({
