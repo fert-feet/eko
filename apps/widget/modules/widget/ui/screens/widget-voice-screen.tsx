@@ -5,7 +5,7 @@ import { screenAtom } from "../../atoms/widget-atoms";
 import WidgetHeader from "../components/widget-header";
 import WidgetFooter from "../components/widget-footer";
 import { useVapi } from "../../hooks/use-vapi";
-import { cn } from "../../../../../../packages/ui/src/lib/utils";
+import { cn } from "@workspace/ui/lib/utils";
 
 const WidgetVoiceScreen = () => {
     const setScreen = useSetAtom(screenAtom);
@@ -32,6 +32,7 @@ const WidgetVoiceScreen = () => {
                     <p>Voice call</p>
                 </div>
             </WidgetHeader>
+            {JSON.stringify(transcript, null, 2)}
             <div className="flex flex-1 h-full flex-col items-center justify-center gap-y-4">
                 <div className="flex items-center justify-center rounded-full border bg-white p-3">
                     <MicIcon className="size-6 text-muted-foreground" />
@@ -55,6 +56,7 @@ const WidgetVoiceScreen = () => {
                             <Button
                                 className="w-full"
                                 size={"lg"}
+                                disabled={isConnecting}
                                 variant={"destructive"}
                                 onClick={() => endCall()}
                             >
@@ -65,6 +67,7 @@ const WidgetVoiceScreen = () => {
                             <Button
                                 className="w-full"
                                 size={"lg"}
+                                disabled={isConnecting}
                                 onClick={() => startCall()}
                             >
                                 <MicIcon />
