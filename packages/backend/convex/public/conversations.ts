@@ -2,7 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 import { supportAgent } from "../system/ai/agent/supportAgent";
 import { MessageDoc, saveMessage } from "@convex-dev/agent";
-import { components } from "../_generated/api";
+import { api, components } from "../_generated/api";
 import { paginationOptsValidator } from "convex/server";
 
 /**
@@ -58,14 +58,14 @@ export const getMany = query({
                     organizationId: conversation.organizationId,
                     threadId: conversation.threadId,
                     lastMessage
-                }
+                };
             })
         );
-        
+
         return {
             ...conversations,
             page: conversationsWithLastMessage
-        }
+        };
     }
 });
 
@@ -123,6 +123,11 @@ export const create = mutation({
             });
         }
 
+        const widgetSettings = await ctx.db
+            .query("widgetSettings")
+            .withIndex("by_organization_id", (q) => q.eq("organizationId", args.organizationId))
+            .unique();
+
         const { threadId } = await supportAgent.createThread(ctx, {
             userId: args.organizationId
         });
@@ -131,7 +136,7 @@ export const create = mutation({
             threadId,
             message: {
                 role: "assistant",
-                content: "Hello, how can i help you today?"
+                content: widgetSettings?.greetMessage || "Hello, how can i help you today?"
             }
         });
 

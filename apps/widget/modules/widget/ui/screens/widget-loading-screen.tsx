@@ -1,10 +1,10 @@
 "use client";
 
-import { contactSessionIdAtomFaily, errorMessageAtom, loadingMessageAtom, organizationIdAtom, screenAtom } from "@/modules/widget/atoms/widget-atoms";
+import { contactSessionIdAtomFaily, errorMessageAtom, loadingMessageAtom, organizationIdAtom, screenAtom, widgetSettingsAtom } from "@/modules/widget/atoms/widget-atoms";
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { api } from "@workspace/backend/_generated/api";
 import { Spinner } from "@workspace/ui/components/spinner";
-import { useAction, useMutation } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 
@@ -17,12 +17,14 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
     const loadingMessage = useAtomValue(loadingMessageAtom);
     const setErrorMessage = useSetAtom(errorMessageAtom);
     const setLoadingMessage = useSetAtom(loadingMessageAtom);
+    const setWidgetSettings = useSetAtom(widgetSettingsAtom);
     const setOrganizationId = useSetAtom(organizationIdAtom);
     const setScreen = useSetAtom(screenAtom);
 
     const contactSessionId = useAtomValue(contactSessionIdAtomFaily(organizationId));
 
     const validateOrganization = useAction(api.public.organizations.validate);
+
     // step1: validate organization
     useEffect(() => {
         if (step !== "org") {
@@ -56,7 +58,6 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
     }, [step, organizationId, setErrorMessage, setScreen, setLoadingMessage, validateOrganization, setOrganizationId]); // TODO: 什么是闭包问题，为什么要避免
 
     // step 2: validate session if exists
-
     const validateContactSession = useMutation(api.public.contactSessions.validate);
     useEffect(() => {
         if (step !== "session") {
@@ -67,7 +68,7 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
 
         if (!contactSessionId) {
             setSessionValid(false);
-            setSetp("done");
+            setSetp("setting");
             return;
         }
 
@@ -79,13 +80,38 @@ const WidgetLoadingScreen = ({ organizationId }: { organizationId: string | null
 
             .then((result) => {
                 setSessionValid(result.valid);
-                setSetp("done");
+                setSetp("setting");
             })
             .catch(() => {
                 setSessionValid(false);
-                setSetp("done");
+                setSetp("setting");
             });
     }, [step, contactSessionId, validateContactSession, setLoadingMessage]);
+
+    // Step 3: Load Widget Settings
+    const widgetSettings = useQuery(api.public.widgetSettings.getByOrganizationId, 
+        organizationId ? {
+            organizationId
+        } : "skip"
+    )
+
+    useEffect(() => {
+        if (step !== "setting") {
+            return
+        }
+
+        setLoadingMessage("Loading widget settings...")
+
+        if (widgetSettings !== undefined && organizationId) {
+            setWidgetSettings(widgetSettings)
+            setSetp("done")
+        }
+    }, [
+        step,
+        widgetSettings,
+        setWidgetSettings,
+        setLoadingMessage
+    ])
 
     useEffect(() => {
         if (step !== "done") {
