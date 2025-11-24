@@ -161,39 +161,39 @@ const WidgetChatScreen = () => {
             </Conversation>
             {/* TODO: Add suggestions */}
             <Form {...form}>
-                    <PromptInput
-                        className="rounded-none border-x-0 border-b-0"
-                        onSubmit={(message) => {
-                            form.setValue("message", message.text || "");
-                            form.handleSubmit(onSubmit)();
-                        }}
-                    >
-                        <FormField
-                            control={form.control}
-                            disabled={conversation?.status === "resolved"}
-                            name="message"
-                            render={({ field }) => (
-                                <PromptInputTextarea
-                                    onChange={field.onChange}
-                                    disabled={conversation?.status === "resolved"} 
-                                    placeholder={
-                                        conversation?.status === "resolved"
-                                            ? "This conversation has been resolved."
-                                            : "Type your message..."
-                                    }
-                                    value={field.value}
-                                />
-                            )}
-                        />
-                        <PromptInputFooter>
-                            <PromptInputTools />
-                            <PromptInputSubmit
-                                disabled={conversation?.status === "resolved" || !form.formState.isValid}
-                                status="ready"
-                                type="submit"
+                <PromptInput
+                    className="rounded-none border-x-0 border-b-0"
+                    onSubmit={(message) => {
+                        form.setValue("message", message.text || "");
+                        form.handleSubmit(onSubmit)();
+                    }}
+                >
+                    <FormField
+                        control={form.control}
+                        disabled={conversation?.status === "resolved"}
+                        name="message"
+                        render={({ field }) => (
+                            <PromptInputTextarea
+                                onChange={field.onChange}
+                                disabled={conversation?.status === "resolved"}
+                                placeholder={
+                                    conversation?.status === "resolved"
+                                        ? "This conversation has been resolved."
+                                        : "Type your message..."
+                                }
+                                value={field.value}
                             />
-                        </PromptInputFooter>
-                    </PromptInput>
+                        )}
+                    />
+                    <PromptInputFooter>
+                        <PromptInputTools />
+                        <PromptInputSubmit
+                            disabled={conversation?.status === "resolved" || !form.formState.isValid}
+                            status="ready"
+                            type="submit"
+                        />
+                    </PromptInputFooter>
+                </PromptInput>
             </Form>
         </>
     );

@@ -18,21 +18,38 @@ export const useVapiPhoneNumbers = (): {
     const getPhoneNumbers = useAction(api.private.vapi.getPhoneNumbers);
 
     useEffect(() => {
+        let cancelled = false;
         const fetchData = async () => {
             try {
                 setIsLoading(true);
                 const result = await getPhoneNumbers();
+
+                if (cancelled) {
+                    return;
+                }
+
                 setData(result);
             } catch (error) {
+                if (cancelled) {
+                    return;
+                }
+
                 setError(error as Error);
                 toast.error("Failed to fetch phone numbers");
             } finally {
-                setIsLoading(false);
+                if (!cancelled) {
+                    setIsLoading(false);
+                }
             }
         };
 
         fetchData();
-    }, [getPhoneNumbers]);
+
+        return () => {
+            cancelled = true
+        }
+
+    }, []);
 
     return { data, isLoading, error };
 };
@@ -50,21 +67,39 @@ export const useVapiAssistants = (): {
     const getAssistants = useAction(api.private.vapi.getAssistants);
 
     useEffect(() => {
+        let cancelled = false;
+
         const fetchData = async () => {
             try {
                 setIsLoading(true);
                 const result = await getAssistants();
+
+                if (cancelled) {
+                    return;
+                }
+
                 setData(result);
             } catch (error) {
+                if (cancelled) {
+                    return;
+                }
+
                 setError(error as Error);
                 toast.error("Failed to fetch assistants");
             } finally {
-                setIsLoading(false);
+                if (!cancelled) {
+                    setIsLoading(false);
+                }
             }
         };
 
         fetchData();
-    }, [getAssistants]);
+
+        // "cancelled" 确保已经卸载的组件不会执行后续的加载（比如点击 tag 后又快速切换，切换后不再加载原来的东西），防止旧数据覆盖新数据
+        return () => {
+            cancelled = true
+        }
+    }, []);
 
     return { data, isLoading, error };
 };
