@@ -12,6 +12,7 @@ import { Separator } from "@workspace/ui/components/separator";
 import { Input } from "@workspace/ui/components/input";
 import { Button } from "@workspace/ui/components/button";
 import { Spinner } from "@workspace/ui/components/spinner";
+import VapiFormFields from "./vapi-form-fields";
 
 // Combined schema for all widget settings
 export const widgetSettingsSchema = z.object({
@@ -28,7 +29,7 @@ export const widgetSettingsSchema = z.object({
 });
 
 type WidgetSettings = Doc<"widgetSettings">;
-type FormSchema = z.infer<typeof widgetSettingsSchema>;
+export type FormSchema = z.infer<typeof widgetSettingsSchema>;
 
 interface CustomizationFormProps {
     initialData?: WidgetSettings | null;
@@ -111,7 +112,6 @@ export const CustomizationForm = ({
                                     <FormDescription>
                                         The first message customers see when they open the chat
                                     </FormDescription>
-                                    {/*TODO: 这是干嘛的？ */}
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -189,10 +189,10 @@ export const CustomizationForm = ({
                             <CardDescription>
                                 Configure voice calling features powered by Vapi
                             </CardDescription>
-                            <CardContent className="space-y-6">
-                                TODO: Vapi settings
-                            </CardContent>
                         </CardHeader>
+                        <CardContent className="space-y-6">
+                            <VapiFormFields form={form} />
+                        </CardContent>
                     </Card>
                 )}
 
