@@ -54,6 +54,9 @@ importers:
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      bowser:
+        specifier: ^2.13.0
+        version: 2.13.0
       convex:
         specifier: ^1.28.0
         version: 1.28.0(@clerk/clerk-react@5.53.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
@@ -3468,6 +3471,9 @@ packages:
 
   bowser@2.12.1:
     resolution: {integrity: sha512-z4rE2Gxh7tvshQ4hluIT7XcFrgLIQaw9X3A+kTTRdovCz5PMukm/0QC/BKSYPj3omF5Qfypn9O/c5kgpmvYUCw==}
+
+  bowser@2.13.0:
+    resolution: {integrity: sha512-yHAbSRuT6LTeKi6k2aS40csueHqgAsFEgmrOsfRyFpJnFv5O2hl9FYmWEUZ97gZ/dG17U4IQQcTx4YAFYPuWRQ==}
 
   brace-expansion@1.1.12:
     resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
@@ -9996,6 +10002,8 @@ snapshots:
       readable-stream: 3.6.2
 
   bowser@2.12.1: {}
+
+  bowser@2.13.0: {}
 
   brace-expansion@1.1.12:
     dependencies:
