@@ -22,6 +22,7 @@ import ConversationStatusButton from "../components/conversation-status-button";
 import { useState } from "react";
 import useInfiniteScroll from "@workspace/ui/hooks/use-infinite-scroll";
 import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
+import { toast } from "sonner";
 
 const ConversationIdView = ({
     conversationId
@@ -89,6 +90,7 @@ const ConversationIdView = ({
 
             form.setValue("message", response)
         } catch (error) {
+            toast.error("Something went wrong")
             console.error(error);
         } finally {
             setIsEnhancing(false);
