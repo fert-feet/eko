@@ -1,16 +1,29 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import Bowser from "bowser";
-import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
-import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import { Id } from "@workspace/backend/_generated/dataModel";
-import { Button } from "../../../../../../packages/ui/src/components/button";
+import DicebearAvatar from "@workspace/ui/components/dicebear-avatar";
+import Bowser from "bowser";
+import { useQuery } from "convex/react";
+import { ClockIcon, MailIcon, MonitorIcon } from "lucide-react";
 import Link from "next/link";
-import { MailIcon } from "lucide-react";
-import { useMemo } from "react";
-import { userAgent } from "next/server";
+import { useParams } from "next/navigation";
+import React, { useMemo } from "react";
+import { Button } from "@workspace/ui/components/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@workspace/ui/components/accordion";
+
+type InfoItem = {
+    label: string;
+    value: string | React.ReactNode;
+    className?: string;
+};
+
+type InfoSection = {
+    id: string;
+    icon: React.ComponentType<{ className?: string; }>;
+    title: string;
+    items: InfoItem[];
+};
 
 const ContactPanel = () => {
     const params = useParams();
@@ -47,6 +60,69 @@ const ContactPanel = () => {
         parseUserAgent(contactSession?.metadata?.userAgent),
         [contactSession?.metadata?.userAgent, parseUserAgent]);
 
+    const accordionSections = useMemo<InfoSection[]>(() => {
+        if (!contactSession?.metadata) {
+            return [];
+        }
+
+        return [
+            {
+                id: "device-info",
+                icon: MonitorIcon,
+                title: "Device Information",
+                items: [
+                    {
+                        label: "Browser",
+                        value:
+                            userAgentInfo.browser + (
+                                userAgentInfo.browserVersion
+                                    ? `${userAgentInfo.browserVersion}`
+                                    : ""
+                            )
+                    },
+                    {
+                        label: "OS",
+                        value:
+                            userAgentInfo.os +
+                            (userAgentInfo.osVersion ? `${userAgentInfo.osVersion}` : "")
+                    },
+                    {
+                        label: "Device",
+                        value:
+                            userAgentInfo.device +
+                            (
+                                userAgentInfo.deviceModel
+                                    ? ` - ${userAgentInfo.deviceModel}`
+                                    : ""
+                            ),
+                        className: "capitalize"
+                    },
+                    {
+                        label: "Viewport",
+                        value: contactSession.metadata.viewportSize,
+                    },
+                    {
+                        label: "Cookies",
+                        value: contactSession.metadata.cookieEnabled ? "Enabled" : "Disabled"
+                    },
+                ]
+            },
+            {
+                id: "section-details",
+                title: "Section details",
+                icon: ClockIcon,
+                items: [
+                    {
+                        label: "Session Started",
+                        value: new Date(
+                            contactSession._creationTime
+                        ).toLocaleString(),
+                    }
+                ],
+            }
+        ];
+    }, [contactSession?.metadata, userAgentInfo]);
+
     if (contactSession === undefined || contactSession === null) {
         return null;
     }
@@ -77,6 +153,44 @@ const ContactPanel = () => {
                         <span>Send Email</span>
                     </Link>
                 </Button>
+            </div>
+            <div>
+                {contactSession.metadata && (
+                    <Accordion
+                        className="w-full rounded-none border-y"
+                        collapsible
+                        type="single"
+                    >
+                        {accordionSections.map((section) => (
+                            <AccordionItem
+                                className="rounded-none outline-none has-focus-visible:z-10 has-focus-visible:border-ring has-focus-visible:ring-[3px] has-focus-visible:ring-ring/50"
+                                key={section.id}
+                                value={section.id}
+                            >
+                                <AccordionTrigger
+                                    className="flex w-full flex-1 items-start justify-between gap-4 rounded-none bg-accent px-5 py-4 text-left font-medium text-sm outline-none transition-all hover:no-underline disabled:pointer-events-none disabled:opacity-50"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <section.icon className="size-4 shrink-0" />
+                                        <span>{section.title}</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="px-5 py-4">
+                                    <div className="space-y-2 text-sm">
+                                        {section.items.map((item) => (
+                                            <div className="flex justify-between" key={`${section.id}-${item.label}`}>
+                                                <span className="text-muted-foreground">
+                                                    {item.label}
+                                                </span>
+                                                <span className={item.className}>{item.value}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                )}
             </div>
         </div>
     );
