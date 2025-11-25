@@ -51,6 +51,11 @@ export const create = action({
             });
         }
 
+        // refresh expire time
+        await ctx.runMutation(internal.system.contactSessions.refresh, {
+            contactSessionId: args.contactSessionId
+        })
+
         const shouldTriggerAgent =
             conversation.status === "unresolved";
 

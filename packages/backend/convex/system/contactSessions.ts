@@ -1,8 +1,8 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, internalQuery } from "../_generated/server";
+import { SESSION_DURATION_MS } from "../constants";
 
 const AUTO_REFRESH_THRESHOLD_MS = 2 * 60 * 60 * 1000 
-const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
 
 // convex 内部方法
 export const getOne = internalQuery({
