@@ -5,6 +5,7 @@ import { Id } from "../_generated/dataModel";
 import { action, mutation, query, QueryCtx } from "../_generated/server";
 import { extractTextContent } from "../lib/extractTextContent";
 import rag from "../system/ai/rag";
+import { internal } from "../_generated/api";
 
 function guessMimeType(filename: string, bytes: ArrayBuffer): string {
     return (
@@ -99,6 +100,20 @@ export const addFile = action({
             throw new ConvexError({
                 code: "UNAUTHORIZED",
                 message: "Organization not found",
+            });
+        }
+
+        const subscriptions = await ctx.runQuery(
+            internal.system.subscription.getByOrganizationId,
+            {
+                organizationId: organizationId
+            }
+        )
+
+        if (subscriptions?.status !== "active") {
+            throw new ConvexError({
+                code: "BAD_REQUEST",
+                message: "Missing subscription",
             });
         }
 

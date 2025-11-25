@@ -51,8 +51,21 @@ export const create = action({
             });
         }
 
+        // refresh expire time
+        await ctx.runMutation(internal.system.contactSessions.refresh, {
+            contactSessionId: args.contactSessionId
+        })
+
+        const subscriptions = await ctx.runQuery(
+            internal.system.subscription.getByOrganizationId,
+            {
+                organizationId: conversation.organizationId
+            }
+        )
+
         const shouldTriggerAgent =
-            conversation.status === "unresolved";
+            conversation.status === "unresolved" &&
+            subscriptions?.status === "active"
 
         if (shouldTriggerAgent) {
             await supportAgent.generateText(
