@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, CreditCardIcon, InboxIcon, LayoutDashboardIcon, LibraryBigIcon, Mic, PaletteIcon } from "lucide-react";
+import { Calendar, CreditCardIcon, InboxIcon, LayoutDashboardIcon, LibraryBigIcon, Mic, PaletteIcon, PiIcon } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@workspace/ui/components/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,6 +36,11 @@ const configurationItems = [
         url: "/plugins/vapi",
         icon: Mic,
     },
+    {
+        title: "Fun page",
+        url: "/peek",
+        icon: PiIcon
+    }
 ];
 
 const accountItems = [
