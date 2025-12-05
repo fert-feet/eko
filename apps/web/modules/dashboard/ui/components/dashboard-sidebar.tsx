@@ -1,7 +1,7 @@
 "use client";
 
 import { Calendar, CreditCardIcon, InboxIcon, LayoutDashboardIcon, LibraryBigIcon, Mic, PaletteIcon, PiIcon } from "lucide-react";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@workspace/ui/components/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem, SidebarRail } from "@workspace/ui/components/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
@@ -98,7 +98,7 @@ const DashboardSidebar = () => {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {customerSupportItems.map(((item) => (
-                                <SidebarMenuItem key={item.title}>
+                                <SidebarMenuItem className="group" key={item.title}>
                                     <SidebarMenuButton
                                         asChild
                                         isActive={isActive(item.url)}
