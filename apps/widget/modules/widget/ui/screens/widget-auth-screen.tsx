@@ -19,14 +19,14 @@ const formSchema = z.object({
 });
 
 const WidgetAuthScreen = () => {
-    const organizationId = useAtomValue(organizationIdAtom)
+    const organizationId = useAtomValue(organizationIdAtom);
     const setContactSessionId = useSetAtom(
         contactSessionIdAtomFaily(organizationId)
-    )
-    
-    const creatContactSession = useMutation(api.public.contactSessions.create)
+    );
 
-    const setScreen = useSetAtom(screenAtom)
+    const creatContactSession = useMutation(api.public.contactSessions.create);
+
+    const setScreen = useSetAtom(screenAtom);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -39,7 +39,7 @@ const WidgetAuthScreen = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         if (!organizationId) {
-            return 
+            return;
         }
 
         const metadata: Doc<"contactSessions">["metadata"] = {
@@ -61,10 +61,10 @@ const WidgetAuthScreen = () => {
             ...values,
             organizationId,
             metadata
-        })
+        });
 
-        setContactSessionId(contactSessionId)
-        setScreen("selection")
+        setContactSessionId(contactSessionId);
+        setScreen("selection");
     };
 
     return (
@@ -79,68 +79,70 @@ const WidgetAuthScreen = () => {
                     </p>
                 </div>
             </WidgetHeader>
-            <Form {...form}>
-                <form
-                    className="flex flex-1 flex-col gap-y-4 p-4"
-                    onSubmit={form.handleSubmit(onSubmit)}
-                >
-                    <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <InputGroup className="h-10 bg-background" {...field}>
-                                        <InputGroupInput placeholder="example.com" />
-                                        <InputGroupAddon align="inline-end">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <InputGroupButton className="rounded-full" size="icon-xs">
-                                                        <EllipsisIcon />
-                                                    </InputGroupButton>
-                                                </TooltipTrigger>
-                                                <TooltipContent>Enter name</TooltipContent>
-                                            </Tooltip>
-                                        </InputGroupAddon>
-                                    </InputGroup>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <InputGroup className="h-10 bg-background" {...field}>
-                                        <InputGroupInput placeholder="example.com" />
-                                        <InputGroupAddon align="inline-end">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <InputGroupButton className="rounded-full" size="icon-xs">
-                                                        <EllipsisIcon />
-                                                    </InputGroupButton>
-                                                </TooltipTrigger>
-                                                <TooltipContent>Enter email</TooltipContent>
-                                            </Tooltip>
-                                        </InputGroupAddon>
-                                    </InputGroup>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button
-                        disabled={form.formState.isSubmitting}
-                        size={"lg"}
-                        type="submit"
+            <div className="flex flex-1 justify-center items-center">
+                <Form {...form}>
+                    <form
+                        className="flex flex-1 flex-col gap-y-4 p-4"
+                        onSubmit={form.handleSubmit(onSubmit)}
                     >
-                        continue
-                    </Button>
-                </form>
-            </Form>
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <InputGroup className="h-10 bg-background" {...field}>
+                                            <InputGroupInput placeholder="example.com" />
+                                            <InputGroupAddon align="inline-end">
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <InputGroupButton className="rounded-full" size="icon-xs">
+                                                            <EllipsisIcon />
+                                                        </InputGroupButton>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Enter name</TooltipContent>
+                                                </Tooltip>
+                                            </InputGroupAddon>
+                                        </InputGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <InputGroup className="h-10 bg-background" {...field}>
+                                            <InputGroupInput placeholder="example.com" />
+                                            <InputGroupAddon align="inline-end">
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <InputGroupButton className="rounded-full" size="icon-xs">
+                                                            <EllipsisIcon />
+                                                        </InputGroupButton>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Enter email</TooltipContent>
+                                                </Tooltip>
+                                            </InputGroupAddon>
+                                        </InputGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button
+                            disabled={form.formState.isSubmitting}
+                            size={"lg"}
+                            type="submit"
+                        >
+                            continue
+                        </Button>
+                    </form>
+                </Form>
+            </div>
         </>
     );
 };
