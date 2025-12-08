@@ -131,7 +131,7 @@ const ConversationIdView = ({
     return (
 
         <div className="flex h-full flex-col bg-muted">
-            <header className="flex items-center justify-between border-b bg-background p-2.5">
+            <header className="flex items-center justify-between h-[53px] border-b bg-background p-2.5">
                 <Button
                     size={"sm"}
                     variant={"ghost"}
@@ -147,7 +147,7 @@ const ConversationIdView = ({
                 )}
             </header>
             {/* conversation */}
-            <Conversation className="max-h-[calc(100vh-180px)]">
+            <Conversation className="max-h-[calc(100vh-185px)]">
                 <ConversationContent>
                     <InfiniteScrollTrigger
                         canLoadMore={canLoadMore}
