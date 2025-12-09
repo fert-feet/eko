@@ -6,7 +6,9 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 export const Route = createRootRoute({
   component: () => (
     <>
-      <Outlet />
+      <div className='w-screen h-screen'>
+        <Outlet />
+      </div>
       <TanStackDevtools
         config={{
           position: 'bottom-right',
@@ -20,4 +22,4 @@ export const Route = createRootRoute({
       />
     </>
   ),
-})
+});

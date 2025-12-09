@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@workspace/ui/globals.css";
 
 body {
   @apply m-0;
