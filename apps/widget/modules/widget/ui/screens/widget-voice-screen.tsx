@@ -1,13 +1,12 @@
-import { Button } from "@workspace/ui/components/button";
-import { useAtomValue, useSetAtom } from "jotai";
-import { ArrowLeftIcon, MenuIcon, MicIcon, MicOffIcon } from "lucide-react";
-import { screenAtom } from "../../atoms/widget-atoms";
-import WidgetHeader from "../components/widget-header";
-import WidgetFooter from "../components/widget-footer";
-import { useVapi } from "../../hooks/use-vapi";
-import { cn } from "@workspace/ui/lib/utils";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@workspace/ui/components/ai/conversation";
 import { Message, MessageContent } from "@workspace/ui/components/ai/message";
+import { Button } from "@workspace/ui/components/button";
+import { cn } from "@workspace/ui/lib/utils";
+import { useSetAtom } from "jotai";
+import { ArrowLeftIcon, MicIcon, MicOffIcon } from "lucide-react";
+import { screenAtom } from "../../atoms/widget-atoms";
+import { useVapi } from "../../hooks/use-vapi";
+import WidgetHeader from "../components/widget-header";
 
 const WidgetVoiceScreen = () => {
     const setScreen = useSetAtom(screenAtom);

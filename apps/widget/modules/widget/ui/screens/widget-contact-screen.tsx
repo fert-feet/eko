@@ -4,7 +4,7 @@ import { ArrowLeftIcon, CheckIcon, CopyIcon, PhoneIcon } from "lucide-react";
 import { useState } from "react";
 import { screenAtom, widgetSettingsAtom } from "../../atoms/widget-atoms";
 import WidgetHeader from "../components/widget-header";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 
 const WidgetContactView = () => {
     const setScreen = useSetAtom(screenAtom);
@@ -65,10 +65,10 @@ const WidgetContactView = () => {
                         )}
                     </Button>
                     <Button asChild className="w-full" size={"lg"}>
-                        <Link href={`tel:${phoneNumber}`} >
+                        <a href={`tel:${phoneNumber}`} >
                         <PhoneIcon />
                             Call Now
-                        </Link>
+                        </a>
                     </Button>
                 </div>
             </div>

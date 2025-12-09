@@ -5,7 +5,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Import the generated route tree
-import { routeTree } from './routeTree.gen';
+import { routeTree } from './routeTree.gen.ts';
 
 import { ConvexReactClient } from 'convex/react';
 import reportWebVitals from './reportWebVitals.ts';

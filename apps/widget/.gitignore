@@ -1,6 +1,10 @@
-
-# clerk configuration (can include secrets)
-/.clerk/
-
-# Sentry Config File
-.env.sentry-build-plugin
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+count.txt
+.env
+.nitro
+.tanstack
+.wrangler
