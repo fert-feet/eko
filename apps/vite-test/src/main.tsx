@@ -29,7 +29,7 @@ declare module '@tanstack/react-router' {
 }
 
 // convex
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+const convex = new ConvexReactClient(import.meta.env.VITE_PUBLIC_CONVEX_URL as string);
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY
 
