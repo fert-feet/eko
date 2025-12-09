@@ -68,7 +68,7 @@ const WidgetSelectionScreen = () => {
             </WidgetHeader>
             <div className="flex flex-col flex-1 gap-y-4 p-4 overflow-y-auto">
                 <Button
-                    className="justify-between h-16 w-full"
+                    className="justify-between h-16 w-full hover:scale-y-[1.05] hover:scale-x-[1.01]"
                     variant={"outline"}
                     onClick={handleNewConversation}
                     disabled={isPending}
@@ -81,7 +81,7 @@ const WidgetSelectionScreen = () => {
                 </Button>
                 {hasVapiSecrets && widgetSettings?.vapiSettings.assistantId && (
                     <Button
-                        className="justify-between h-16 w-full"
+                        className="justify-between h-16 w-full hover:scale-y-[1.05] hover:scale-x-[1.01]"
                         variant={"outline"}
                         onClick={() => setScreen("voice")}
                         disabled={isPending}
@@ -95,7 +95,7 @@ const WidgetSelectionScreen = () => {
                 )}
                 {hasVapiSecrets && widgetSettings?.vapiSettings.phoneNumber && (
                     <Button
-                        className="justify-between h-16 w-full"
+                        className="justify-between h-16 w-full hover:scale-y-[1.05] hover:scale-x-[1.01]"
                         variant={"outline"}
                         onClick={() => setScreen("contact")}
                         disabled={isPending}

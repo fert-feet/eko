@@ -2,7 +2,7 @@ import { contactSessionIdAtomFaily, organizationIdAtom, screenAtom } from "@/mod
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@workspace/backend/_generated/api";
-import { Doc } from "@workspace/backend/_generated/dataModel";
+import type { Doc } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@workspace/ui/components/form";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@workspace/ui/components/input-group";

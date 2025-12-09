@@ -4,7 +4,7 @@ import { contactSessionIdAtomFaily, conversationIdAtom, organizationIdAtom, scre
 import WidgetFooter from "@/modules/widget/ui/components/widget-footer";
 import WidgetHeader from "@/modules/widget/ui/components/widget-header";
 import { api } from "@workspace/backend/_generated/api";
-import { Id } from "@workspace/backend/_generated/dataModel";
+import type { Id } from "@workspace/backend/_generated/dataModel";
 import { Button } from "@workspace/ui/components/button";
 import ConversationStatusIcon from "@workspace/ui/components/conversation-status-icon";
 import InfiniteScrollTrigger from "@workspace/ui/components/infinite-scroll-trigger";
@@ -18,7 +18,6 @@ const WidgetInboxScreen = () => {
     const setScreen = useSetAtom(screenAtom);
     const setConversationId = useSetAtom(conversationIdAtom);
 
-    const conversationId = useAtomValue(conversationIdAtom);
     const organizationId = useAtomValue(organizationIdAtom);
 
     const contactSessionId = useAtomValue(contactSessionIdAtomFaily(organizationId));
