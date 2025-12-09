@@ -81,6 +81,15 @@ importers:
       '@vapi-ai/web':
         specifier: ^2.5.1
         version: 2.5.1
+      '@workspace/backend':
+        specifier: workspace:*
+        version: link:../../packages/backend
+      '@workspace/math':
+        specifier: workspace:*
+        version: link:../../packages/math
+      '@workspace/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       convex:
         specifier: ^1.28.0
         version: 1.28.0(@clerk/clerk-react@5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
