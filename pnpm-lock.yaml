@@ -52,127 +52,6 @@ importers:
         specifier: ^7.2.4
         version: 7.2.4(@types/node@20.19.24)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)
 
-  apps/vite-test:
-    dependencies:
-      '@clerk/clerk-react':
-        specifier: ^5.58.0
-        version: 5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@convex-dev/agent':
-        specifier: ^0.2.12
-        version: 0.2.12(@ai-sdk/provider-utils@3.0.17(zod@3.25.76))(ai@5.0.87(zod@3.25.76))(convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.28.0(@clerk/clerk-react@5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1))(react@19.1.1)(typescript@5.9.3)(zod@3.25.76))(convex@1.28.0(@clerk/clerk-react@5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1))(react@19.1.1)
-      '@hookform/resolvers':
-        specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.66.0(react@19.1.1))
-      '@tailwindcss/vite':
-        specifier: ^4.0.6
-        version: 4.1.17(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
-      '@tanstack/react-devtools':
-        specifier: ^0.7.0
-        version: 0.7.11(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(solid-js@1.9.10)
-      '@tanstack/react-router':
-        specifier: ^1.132.0
-        version: 1.140.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@tanstack/react-router-devtools':
-        specifier: ^1.132.0
-        version: 1.140.0(@tanstack/react-router@1.140.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@tanstack/router-core@1.140.0)(csstype@3.2.3)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(solid-js@1.9.10)
-      '@tanstack/router-plugin':
-        specifier: ^1.132.0
-        version: 1.140.0(@tanstack/react-router@1.140.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))(webpack@5.102.1)
-      '@vapi-ai/web':
-        specifier: ^2.5.1
-        version: 2.5.1
-      '@workspace/backend':
-        specifier: workspace:*
-        version: link:../../packages/backend
-      '@workspace/math':
-        specifier: workspace:*
-        version: link:../../packages/math
-      '@workspace/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      convex:
-        specifier: ^1.28.0
-        version: 1.28.0(@clerk/clerk-react@5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
-      jotai:
-        specifier: ^2.15.1
-        version: 2.15.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.1.1)
-      lucide-react:
-        specifier: ^0.545.0
-        version: 0.545.0(react@19.1.1)
-      react:
-        specifier: ^19.1.1
-        version: 19.1.1
-      react-dom:
-        specifier: ^19.1.1
-        version: 19.1.1(react@19.1.1)
-      react-hook-form:
-        specifier: ^7.65.0
-        version: 7.66.0(react@19.1.1)
-      tailwindcss:
-        specifier: ^4.0.6
-        version: 4.1.16
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.9.3)(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
-    devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4.1.11
-        version: 4.1.16
-      '@tanstack/devtools-vite':
-        specifier: ^0.3.11
-        version: 0.3.11(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
-      '@tanstack/eslint-config':
-        specifier: ^0.3.0
-        version: 0.3.4(@typescript-eslint/utils@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      '@testing-library/dom':
-        specifier: ^10.4.0
-        version: 10.4.1
-      '@testing-library/react':
-        specifier: ^16.2.0
-        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.1
-      '@types/react':
-        specifier: ^19.1.1
-        version: 19.2.7
-      '@types/react-dom':
-        specifier: ^19.1.1
-        version: 19.2.3(@types/react@19.2.7)
-      '@vitejs/plugin-react':
-        specifier: ^5.0.4
-        version: 5.1.1(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
-      '@workspace/eslint-config':
-        specifier: workspace:^
-        version: link:../../packages/eslint-config
-      '@workspace/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      jsdom:
-        specifier: ^27.0.0
-        version: 27.2.0(postcss@8.5.6)
-      prettier:
-        specifier: ^3.5.3
-        version: 3.6.2
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-      vite:
-        specifier: ^7.1.7
-        version: 7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)
-      vitest:
-        specifier: ^3.0.5
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.19.1)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6))(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)
-      web-vitals:
-        specifier: ^5.1.0
-        version: 5.1.0
-
   apps/web:
     dependencies:
       '@clerk/nextjs':
@@ -254,12 +133,30 @@ importers:
 
   apps/widget:
     dependencies:
+      '@clerk/clerk-react':
+        specifier: ^5.58.0
+        version: 5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@convex-dev/agent':
         specifier: ^0.2.12
         version: 0.2.12(@ai-sdk/provider-utils@3.0.17(zod@3.25.76))(ai@5.0.87(zod@3.25.76))(convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.28.0(@clerk/clerk-react@5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1))(react@19.1.1)(typescript@5.9.3)(zod@3.25.76))(convex@1.28.0(@clerk/clerk-react@5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1))(react@19.1.1)
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.66.0(react@19.1.1))
+      '@tailwindcss/vite':
+        specifier: ^4.0.6
+        version: 4.1.17(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
+      '@tanstack/react-devtools':
+        specifier: ^0.7.0
+        version: 0.7.11(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(csstype@3.2.3)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(solid-js@1.9.10)
+      '@tanstack/react-router':
+        specifier: ^1.132.0
+        version: 1.140.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@tanstack/react-router-devtools':
+        specifier: ^1.132.0
+        version: 1.140.0(@tanstack/react-router@1.140.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@tanstack/router-core@1.140.0)(csstype@3.2.3)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(solid-js@1.9.10)
+      '@tanstack/router-plugin':
+        specifier: ^1.132.0
+        version: 1.140.0(@tanstack/react-router@1.140.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))(webpack@5.102.1)
       '@vapi-ai/web':
         specifier: ^2.5.1
         version: 2.5.1
@@ -272,9 +169,6 @@ importers:
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      agent^0.2.12:
-        specifier: link:@convex-dev/agent^0.2.12
-        version: link:@convex-dev/agent^0.2.12
       convex:
         specifier: ^1.28.0
         version: 1.28.0(@clerk/clerk-react@5.58.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
@@ -283,13 +177,10 @@ importers:
         version: 4.1.0
       jotai:
         specifier: ^2.15.1
-        version: 2.15.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.2)(react@19.1.1)
+        version: 2.15.1(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.7)(react@19.1.1)
       lucide-react:
-        specifier: ^0.475.0
-        version: 0.475.0(react@19.1.1)
-      next-themes:
-        specifier: ^0.4.6
-        version: 0.4.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: ^0.545.0
+        version: 0.545.0(react@19.1.1)
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -299,28 +190,67 @@ importers:
       react-hook-form:
         specifier: ^7.65.0
         version: 7.66.0(react@19.1.1)
+      tailwindcss:
+        specifier: ^4.0.6
+        version: 4.1.17
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.3)(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
       zod:
         specifier: ^3.25.76
         version: 3.25.76
     devDependencies:
+      '@tailwindcss/postcss':
+        specifier: ^4.1.11
+        version: 4.1.16
+      '@tanstack/devtools-vite':
+        specifier: ^0.3.11
+        version: 0.3.11(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
+      '@tanstack/eslint-config':
+        specifier: ^0.3.0
+        version: 0.3.4(@typescript-eslint/utils@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      '@testing-library/dom':
+        specifier: ^10.4.0
+        version: 10.4.1
+      '@testing-library/react':
+        specifier: ^16.2.0
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@types/node':
-        specifier: ^20.19.9
-        version: 20.19.24
+        specifier: ^22.10.2
+        version: 22.19.1
       '@types/react':
-        specifier: ^19.1.9
-        version: 19.2.2
+        specifier: ^19.1.1
+        version: 19.2.7
       '@types/react-dom':
-        specifier: ^19.1.7
-        version: 19.2.2(@types/react@19.2.2)
+        specifier: ^19.1.1
+        version: 19.2.3(@types/react@19.2.7)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.4
+        version: 5.1.1(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0))
       '@workspace/eslint-config':
         specifier: workspace:^
         version: link:../../packages/eslint-config
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      jsdom:
+        specifier: ^27.0.0
+        version: 27.2.0(postcss@8.5.6)
+      prettier:
+        specifier: ^3.5.3
+        version: 3.6.2
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.7.2
         version: 5.9.3
+      vite:
+        specifier: ^7.1.7
+        version: 7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)
+      vitest:
+        specifier: ^3.0.5
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.19.1)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6))(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)
+      web-vitals:
+        specifier: ^5.1.0
+        version: 5.1.0
 
   packages/backend:
     dependencies:
@@ -11550,7 +11480,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.19.24
+      '@types/node': 22.19.1
 
   '@types/d3-array@3.2.2': {}
 
@@ -11696,7 +11626,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
-      '@types/node': 20.19.24
+      '@types/node': 22.19.1
 
   '@types/hast@3.0.4':
     dependencies:
@@ -11723,7 +11653,7 @@ snapshots:
 
   '@types/mysql@2.15.27':
     dependencies:
-      '@types/node': 20.19.24
+      '@types/node': 22.19.1
 
   '@types/node@20.19.24':
     dependencies:
@@ -11739,7 +11669,7 @@ snapshots:
 
   '@types/pg@8.15.5':
     dependencies:
-      '@types/node': 20.19.24
+      '@types/node': 22.19.1
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
@@ -11763,11 +11693,11 @@ snapshots:
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 20.19.24
+      '@types/node': 22.19.1
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 20.19.24
+      '@types/node': 22.19.1
 
   '@types/tinycolor2@1.4.6': {}
 
