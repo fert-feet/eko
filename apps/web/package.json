@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "dev": "next dev --turbo --port 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -16,7 +17,6 @@
     "@hookform/resolvers": "^5.2.2",
     "@sentry/nextjs": "^10",
     "@workspace/backend": "workspace:*",
-    "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
     "bowser": "^2.13.0",
     "convex": "^1.28.0",
