@@ -1,31 +1,24 @@
 "use client";
 
 import { Button } from "@workspace/ui/components/button";
-import { useMutation, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
-import { OrganizationSwitcher, SignInButton, SignOutButton, UserButton, useUser } from "@clerk/nextjs";
+import { OrganizationSwitcher, SignIn, SignInButton, SignOutButton, UserButton, useUser } from "@clerk/nextjs";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@workspace/ui/components/empty";
+import { ArrowUpRightIcon, BedIcon, FileIcon } from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
+import ConversationsView from "../../modules/dashboard/ui/view/conversations-view";
 
 export default function Page() {
   const users = useQuery(api.user.getTest);
-  const add = useMutation(api.user.add)
-  console.log(users);
+  const {isLoading, isAuthenticated} = useConvexAuth()
+  const router = useRouter()
+
+  if (isAuthenticated) {
+      redirect("/conversations")
+  }
 
   return (
-    <div className="flex items-center justify-center right-0 absolute">
-      <div className="flex items-center justify-center">
-        <SignInButton mode="modal">
-          <Button>
-            sign in
-          </Button>
-        </SignInButton>
-        <SignOutButton>
-          <Button>
-            sign out
-          </Button>
-        </SignOutButton>
-        <UserButton />
-        <OrganizationSwitcher />
-      </div>
-    </div>
-  );
+        <SignInButton mode="modal" />
+  )
 }

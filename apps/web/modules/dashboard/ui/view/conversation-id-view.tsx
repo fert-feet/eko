@@ -128,8 +128,15 @@ const ConversationIdView = ({
 
     };
 
-    return (
+    if (conversation === undefined) {
+        return (
+            <div className="flex h-full items-center justify-center flex-col bg-muted">
+                <Spinner className="size-8" />
+            </div>
+        )
+    }
 
+    return (
         <div className="flex h-full flex-col bg-muted">
             <header className="flex items-center justify-between h-[53px] border-b bg-background p-2.5">
                 <Button
